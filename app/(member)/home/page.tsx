@@ -24,6 +24,8 @@ interface HistoryRecord {
   food_list: Array<Object>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   const router = useRouter();
   const { data: session, status } = useSession();

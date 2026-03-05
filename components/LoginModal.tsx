@@ -15,6 +15,8 @@ interface LoginModalProps {
   onGuestContinue: () => void;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function LoginModal({ isOpen, onClose, onGuestContinue }: LoginModalProps) {
   const router = useRouter();
   // const { signInWithGoogle } = useAuth();

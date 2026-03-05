@@ -12,6 +12,8 @@ import Q2HealthGoals from "@/components/onboarding/Q2HealthGoals";
 import Q3Lifestyle from "@/components/onboarding/Q3Lifestyle";
 import Q4DietaryRestrictions from "@/components/onboarding/Q4DietaryRestrictions";
 
+export const dynamic = 'force-dynamic';
+
 export default function OnboardingPage() {
   const router = useRouter();
   const {

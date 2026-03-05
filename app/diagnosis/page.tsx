@@ -10,6 +10,9 @@ import { useResultStore } from "@/store/use-result-store";
 
 type Step = "disclaimer" | "camera" | "analyzing";
 
+export const dynamic = 'force-dynamic';
+
+
 export default function DiagnosisPage() {
   const router = useRouter();
   const { language } = useLanguageStore();

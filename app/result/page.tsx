@@ -20,6 +20,8 @@ interface DiagnosisResult {
   imageFile: string;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function ResultPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
