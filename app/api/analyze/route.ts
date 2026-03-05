@@ -3,11 +3,11 @@ import { GoogleGenAI } from "@google/genai";
 import tongue_ref_data from "./recommend_rule.json";
 import { id } from "date-fns/locale";
 
-// Initialize Google GenAI client
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-// const ai = new GoogleGenAI({});
 
 export async function POST(req: Request) {
+  // Initialize Google GenAI client
+  const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
   try {
     const body = await req.json();
     const { imageUrl, language = "zh" } = body;
@@ -71,30 +71,81 @@ ${JSON.stringify(tongue_ref_data, null, 2)}
             type: "object",
             properties: {
               id: { type: "string" },
-              name: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-              tongue_body_desc: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-              tongue_coating_desc: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-              desc: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-              quote: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-              advice: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
+              name: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
+              tongue_body_desc: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
+              tongue_coating_desc: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
+              desc: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
+              quote: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
+              advice: {
+                type: "object",
+                properties: { zh: { type: "string" }, en: { type: "string" } },
+              },
               foods: {
                 type: "array",
                 items: {
                   type: "object",
                   properties: {
                     id: { type: "string" },
-                    name: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-                    benefitText: { type: "object", properties: { zh: { type: "string" }, en: { type: "string" } } },
-                    diet: { type: "object", properties: { vegan: { type: "boolean" }, vegetarian: { type: "boolean" } } },
+                    name: {
+                      type: "object",
+                      properties: {
+                        zh: { type: "string" },
+                        en: { type: "string" },
+                      },
+                    },
+                    benefitText: {
+                      type: "object",
+                      properties: {
+                        zh: { type: "string" },
+                        en: { type: "string" },
+                      },
+                    },
+                    diet: {
+                      type: "object",
+                      properties: {
+                        vegan: { type: "boolean" },
+                        vegetarian: { type: "boolean" },
+                      },
+                    },
                     allergens: { type: "array", items: { type: "string" } },
-                    contraindications: { type: "array", items: { type: "string" } },
-                    healthBenefits: { type: "array", items: { type: "string" } },
+                    contraindications: {
+                      type: "array",
+                      items: { type: "string" },
+                    },
+                    healthBenefits: {
+                      type: "array",
+                      items: { type: "string" },
+                    },
                   },
                   required: ["id", "name", "benefitText"],
                 },
               },
             },
-            required: ["id", "name", "desc", "quote", "advice", "foods", "tongue_body_desc", "tongue_coating_desc"],
+            required: [
+              "id",
+              "name",
+              "desc",
+              "quote",
+              "advice",
+              "foods",
+              "tongue_body_desc",
+              "tongue_coating_desc",
+            ],
           },
           minItems: 1,
           maxItems: 1, // Make sure to only get one result as per the requirement
