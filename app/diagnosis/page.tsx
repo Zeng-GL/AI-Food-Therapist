@@ -15,19 +15,22 @@ export default function DiagnosisPage() {
   const { language } = useLanguageStore();
   const { data: session, status } = useSession();
   
-  // ✅ 修正：改用 State 並在 useEffect 讀取，避免編譯時 ReferenceError: sessionStorage is not defined
+  // ✅ 防護 1：將所有狀態初始化為安全值
   const [isGuest, setIsGuest] = useState<boolean>(false);
   const [step, setStep] = useState<Step>("disclaimer");
   const [analysisStep, setAnalysisStep] = useState<string>("");
   const setAnalysisData = useResultStore((state) => state.setAnalysisData);
   const isZh = language === "zh";
 
+  // ✅ 防護 2：isLoggedIn 也要依賴 isGuest 這個 state，而不是直接讀取 sessionStorage
   const isLoggedIn = status === "authenticated" && !isGuest;
 
   useEffect(() => {
-    // ✅ 確保只在瀏覽器端讀取
-    const guestStatus = typeof window !== "undefined" && sessionStorage.getItem("is_guest") === "true";
-    setIsGuest(guestStatus);
+    // ✅ 防護 3：所有 sessionStorage 的讀取必須「嚴格」限制在 useEffect 內部
+    if (typeof window !== "undefined") {
+      const guestStatus = sessionStorage.getItem("is_guest") === "true";
+      setIsGuest(guestStatus);
+    }
   }, []);
 
   useEffect(() => {
@@ -81,14 +84,17 @@ export default function DiagnosisPage() {
       const data = await resAnalysis.json();
       setAnalysisData(data.result, key);
 
-      sessionStorage.setItem(
-        "diagnosis_result",
-        JSON.stringify({
-          result_code: data.result.result_code,
-          confidence: data.result.confidence,
-          imageFile: viewUrl,
-        }),
-      );
+      // ✅ 這裡也要加 window 檢查
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(
+          "diagnosis_result",
+          JSON.stringify({
+            result_code: data.result.result_code,
+            confidence: data.result.confidence,
+            imageFile: viewUrl,
+          }),
+        );
+      }
 
       router.push("/result");
     } catch (error) {
@@ -122,7 +128,9 @@ export default function DiagnosisPage() {
             if (isLoggedIn) {
               router.push("/home");
             } else {
-              if (typeof window !== "undefined") sessionStorage.removeItem("is_guest");
+              if (typeof window !== "undefined") {
+                sessionStorage.removeItem("is_guest");
+              }
               router.push("/");
             }
           }}
