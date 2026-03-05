@@ -1,0 +1,110 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"; // 新增 S3 引用
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"; // 新增簽名工具
+import { v4 as uuidv4 } from 'uuid';
+
+// 初始化 AWS Clients
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+const ddb = DynamoDBDocumentClient.from(ddbClient);
+
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
+
+// POST 部分保持不變 (假設你存入的是 S3 的 Key 或者是包含路徑的 URL)
+export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { diagnosisData, imageUrl } = await req.json();
+    
+    console.log(imageUrl)
+    
+    await ddb.send(new PutCommand({
+      TableName: "DiagnosisHistory",
+      Item: {
+        historyId: uuidv4(),
+        userId: (session.user as any).id,
+        email: session.user.email,
+        result: diagnosisData,
+        imageUrl: imageUrl,
+        createdAt: new Date().toISOString(),
+      },
+    }));
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("DynamoDB Save Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function GET(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const userId = (session.user as any).id;
+
+    // 1. 從 DynamoDB 撈取紀錄
+    const { Items } = await ddb.send(new QueryCommand({
+      TableName: "DiagnosisHistory",
+      KeyConditionExpression: "userId = :uid",
+      ExpressionAttributeValues: {
+        ":uid": userId,
+      },
+    }));
+
+    if (!Items) return NextResponse.json({ items: [] });
+
+    // 2. 為每一筆紀錄生成臨時的 S3 讀取網址
+    const itemsWithSignedUrls = await Promise.all(
+      Items.map(async (item) => {
+        if (!item.imageUrl) return item;
+
+        try {
+          // 解析 S3 Key: 如果存的是完整網址，需要去掉前綴拿掉 Key
+          // 如果存的是單純路徑 (如 uploads/xxx.jpg)，直接用即可
+          let s3Key = item.imageUrl;
+          if (s3Key.includes("amazonaws.com/")) {
+            s3Key = s3Key.split("amazonaws.com/")[1];
+          }
+
+          const command = new GetObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: s3Key,
+          });
+
+          // 生成有效期為 3600 秒 (1小時) 的讀取網址
+          const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+
+          return {
+            ...item,
+            imageUrl: signedUrl, // 將資料庫的 Key 替換為臨時可訪問的網址
+          };
+        } catch (s3Error) {
+          console.error("Error signing S3 URL for key:", item.imageUrl, s3Error);
+          return item; // 簽名失敗則回傳原始資料
+        }
+      })
+    );
+
+    return NextResponse.json({ items: itemsWithSignedUrls });
+  } catch (error) {
+    console.error("DynamoDB Query Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

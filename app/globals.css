@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FDF8F7;
+  --foreground: #4F6D50;
+  --brand-soft: rgba(108, 154, 93, 0.1);
+  --brand-soft-2: rgba(108, 154, 93, 0.06);
+  --brand-soft-3: rgba(108, 154, 93, 0.04);
+  --warm-soft: rgba(196, 167, 125, 0.06);
+}
+
+body {
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  /* 活潑且專業：多層綠暈 + 一點暖色 + 雙層點紋 + 中央光感 */
+  background-color: var(--background);
+  background-image:
+    /* 最上層：細點紋理（增加層次） */
+    radial-gradient(circle at 1px 1px, rgba(108, 154, 93, 0.09) 1px, transparent 0),
+    /* 大點裝飾（錯開排列，更活潑） */
+    radial-gradient(circle at 8px 8px, rgba(108, 154, 93, 0.05) 2px, transparent 0),
+    /* 右上：主綠暈（稍明顯） */
+    radial-gradient(ellipse 110% 85% at 100% -5%, var(--brand-soft) 0%, transparent 50%),
+    /* 左下：第二綠暈 */
+    radial-gradient(ellipse 85% 65% at -5% 100%, var(--brand-soft-2) 0%, transparent 48%),
+    /* 左中：小綠暈 */
+    radial-gradient(circle 50% at 0% 50%, var(--brand-soft-2) 0%, transparent 50%),
+    /* 右中下：補一層 */
+    radial-gradient(ellipse 60% 50% at 90% 75%, var(--brand-soft-2) 0%, transparent 50%),
+    /* 中央：極淡光感（增加立體感） */
+    radial-gradient(ellipse 120% 80% at 50% 40%, var(--brand-soft-3) 0%, transparent 60%),
+    /* 左上角：一點暖色（米/陶土，增加溫度不搶戲） */
+    radial-gradient(circle 70% at 0% 0%, var(--warm-soft) 0%, transparent 45%);
+  background-size:
+    24px 24px,
+    32px 32px,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background-position: 0 0, 4px 4px, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
