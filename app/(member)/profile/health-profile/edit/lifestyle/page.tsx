@@ -139,16 +139,14 @@ export default function EditLifestyle() {
             </div>
 
             {/* Current Selection */}
-            <div className="text-center p-4 bg-surface rounded-xl">
+            {/* <div className="text-center p-4 bg-surface rounded-xl">
               <div className="text-3xl mb-2">{getStressEmoji(stressLevel)}</div>
               <div className="text-sm font-medium text-gray-700">
                 {
-                  q3.stressLevels[stressLevel as keyof typeof q3.stressLevels][
-                    language
-                  ]
+                  q3.stressLevels[stressLevel as keyof typeof q3.stressLevels][language]
                 }
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

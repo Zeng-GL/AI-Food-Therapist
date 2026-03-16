@@ -19,12 +19,13 @@ import { getFoodImage } from "@/lib/image-mapping";
 
 interface HistoryRecord {
   resultCode: TongueType;
+  name: { zh: string; en: string };
   timestamp: number;
   imageUrl?: string;
   food_list: Array<Object>;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   const router = useRouter();
@@ -91,6 +92,7 @@ export default function HomePage() {
           if (item) {
             const record: HistoryRecord = {
               resultCode: item.result.id as TongueType,
+              name: item.result.name,
               timestamp: item.createdAt
                 ? new Date(item.createdAt).getTime()
                 : Date.now(),
@@ -329,7 +331,10 @@ function LatestScanCard({
             },
           )}
         </p>
-        <p className="font-bold text-gray-800">{scan.resultCode}</p>
+        {/* <p className="font-bold text-gray-800">{scan.resultCode}</p> */}
+        <p className="font-bold text-gray-800">
+          {isZh ? scan.name.zh : scan.name.en}
+        </p>
       </div>
     </div>
   );

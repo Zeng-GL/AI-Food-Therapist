@@ -56,20 +56,7 @@ export async function PUT(req: NextRequest) {
   }
 
   const googleId = (session.user as any).id;
-
-  let body: {
-    gender?: string | null;
-    ageGroup?: string | null;
-    primaryGoals?: string[];
-    sleepHabit?: string | null;
-    stressLevel?: number;
-    allergies?: string[];
-    dietType?: string;
-    medicalConditions?: string[];
-    customAllergy?: string;
-    customDietType?: string;
-    customMedicalCondition?: string;
-  };
+  let body: any;
 
   try {
     body = await req.json();
@@ -77,50 +64,40 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
+  // 1. 動態構建更新參數
+  const updateParts: string[] = ["onboardingCompleted = :done", "updatedAt = :updatedAt"];
+  const exprAttrValues: Record<string, any> = {
+    ":done": true,
+    ":updatedAt": new Date().toISOString(),
+  };
+
+  // 定義哪些欄位允許從 body 更新
+  const allowedFields = [
+    "gender", "ageGroup", "primaryGoals", "sleepHabit", 
+    "stressLevel", "allergies", "dietType", "medicalConditions",
+    "customAllergy", "customDietType", "customMedicalCondition"
+  ];
+
+  allowedFields.forEach((field) => {
+    if (body[field] !== undefined) { // 只有當前端有傳這個 Key 時才更新
+      updateParts.push(`${field} = :${field}`);
+      exprAttrValues[`:${field}`] = body[field];
+    }
+  });
+
   try {
     await ddb.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { googleId },
-        UpdateExpression: `SET
-          onboardingCompleted = :done,
-          gender = :gender,
-          ageGroup = :ageGroup,
-          primaryGoals = :primaryGoals,
-          sleepHabit = :sleepHabit,
-          stressLevel = :stressLevel,
-          allergies = :allergies,
-          dietType = :dietType,
-          medicalConditions = :medicalConditions,
-          customAllergy = :customAllergy,
-          customDietType = :customDietType,
-          customMedicalCondition = :customMedicalCondition,
-          updatedAt = :updatedAt
-        `,
-        ExpressionAttributeValues: {
-          ":done": true,
-          ":gender": body.gender ?? null,
-          ":ageGroup": body.ageGroup ?? null,
-          ":primaryGoals": body.primaryGoals ?? [],
-          ":sleepHabit": body.sleepHabit ?? null,
-          ":stressLevel": body.stressLevel ?? 0,
-          ":allergies": body.allergies ?? [],
-          ":dietType": body.dietType ?? "General",
-          ":medicalConditions": body.medicalConditions ?? [],
-          ":customAllergy": body.customAllergy ?? "",
-          ":customDietType": body.customDietType ?? "",
-          ":customMedicalCondition": body.customMedicalCondition ?? "",
-          ":updatedAt": new Date().toISOString(),
-        },
+        UpdateExpression: `SET ${updateParts.join(", ")}`,
+        ExpressionAttributeValues: exprAttrValues,
       })
     );
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to update user profile:", error);
-    return NextResponse.json(
-      { error: "Failed to update profile" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
   }
 }

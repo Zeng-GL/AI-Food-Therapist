@@ -74,14 +74,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleResetForTesting = () => {
-    if (confirm(isZh ? "這將清除所有資料，確定要重置嗎？（僅用於測試）" : "This will clear all data. Reset for testing?")) {
-      localStorage.clear();
-      alert(isZh ? "已重置！頁面將重新載入。" : "Reset complete! Page will reload.");
-      window.location.href = "/";
-    }
-  };
-
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "zh" : "en");
   };
@@ -202,15 +194,6 @@ export default function ProfilePage() {
               <LogOut size={20} />
               <span>{isZh ? "登出" : "Log Out"}</span>
             </button>
-
-            {process.env.NODE_ENV === "development" && (
-              <button
-                onClick={handleResetForTesting}
-                className="w-full py-3 px-4 mt-3 bg-gray-100 text-gray-600 rounded-xl font-medium hover:bg-gray-200 transition-colors text-sm"
-              >
-                🔄 {isZh ? "重置測試資料" : "Reset Test Data"}
-              </button>
-            )}
           </div>
         </div>
 

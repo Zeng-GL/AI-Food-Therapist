@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
     const knowledgeText = `
 【核心規則】
-1. 必須嚴格比對照片特徵與知識庫中的 desc 描述、食物名稱及食物功效
+1. 必須嚴格比對照片特徵與知識庫中的 desc 描述、食物名稱及食物功效；但如果照片中沒有舌頭，請一律回覆"No Tongue"類別
 2. 輸出的 id 必須是知識庫中存在的 id
 3. 只選擇最明顯、最匹配的一種舌象（不要多選）
 4. 所有輸出的欄位都要完整填寫，不可遺漏
@@ -160,6 +160,7 @@ ${JSON.stringify(tongue_ref_data, null, 2)}
     try {
       const jsonArray = JSON.parse(rawResponse || "[]");
       analysisResult = jsonArray[0] || null; // replace first item（because schema + maxItems:1）
+      console.log(analysisResult)
     } catch (parseError) {
       console.error("Gemini JSON parse failed:", rawResponse, parseError);
     }

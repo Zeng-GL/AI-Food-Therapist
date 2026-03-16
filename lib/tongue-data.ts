@@ -1,4 +1,4 @@
-export type TongueType = 'red' | 'pale' | 'white_thick' | 'yellow_thick' | 'peeled' | 'teeth_marks' | 'cracked';
+export type TongueType = 'red' | 'pale' | 'white_thick' | 'yellow_thick' | 'peeled' | 'teeth_marks' | 'cracked' | 'no_tongue';
 
 export interface FoodItem {
   name: { en: string; zh: string };
@@ -275,7 +275,25 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
         benefits: ['general_wellness']
       }
     ]
-  }
+  },
+  no_tongue: {
+    id: 'no_tongue',
+    name: { en: 'No Tongue Detected', zh: '未偵測到舌頭' },
+    desc: { en: 'The system could not detect a tongue in the image.', zh: '系統在影像中未偵測到舌頭' },
+    quote: { en: 'Please make sure your tongue is clearly visible in the photo.', zh: '請確保舌頭在照片中清楚可見。' },
+    advice: { en: 'Try taking the photo again in good lighting, stick out your tongue naturally, and keep the camera steady.', zh: '請在光線充足的環境下重新拍攝，自然伸出舌頭並保持相機穩定。' },
+    foods: [
+      { 
+        name: { en: '', zh: '' }, 
+        benefit: { en: '', zh: '' },
+        isVegan: true,
+        isVegetarian: true,
+        allergens: [],
+        contraindications: [],
+        benefits: []
+      }
+    ]
+  },
 };
 
 export const getTongueData = (type: TongueType): TongueData => {

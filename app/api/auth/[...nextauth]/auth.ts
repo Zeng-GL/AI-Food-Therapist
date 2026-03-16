@@ -2,7 +2,7 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 // 初始化 AWS Client
 const client = new DynamoDBClient({
@@ -29,19 +29,29 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user }: any) {
       try {
-        await ddb.send(new PutCommand({
-          TableName: "Users", // 確保 Vercel 也能存取這個 Table 名稱
-          Item: {
-            googleId: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            lastLogin: new Date().toISOString(),
+        await ddb.send(new UpdateCommand({
+          TableName: "Users", 
+          Key: { googleId: user.id },
+          UpdateExpression: `SET 
+            email = :email, 
+            #name = :name, 
+            image = :image, 
+            lastLogin = :lastLogin,
+            createdAt = if_not_exists(createdAt, :lastLogin)
+          `,
+          ExpressionAttributeNames: {
+            "#name": "name" // 因為 'name' 是 DynamoDB 的保留字，必須這樣寫
+          },
+          ExpressionAttributeValues: {
+            ":email": user.email,
+            ":name": user.name,
+            ":image": user.image,
+            ":lastLogin": new Date().toISOString(),
           },
         }));
         return true;
       } catch (error) {
-        console.error("存入 AWS 失敗", error);
+        console.error("Fail to Update", error);
         return true; 
       }
     },

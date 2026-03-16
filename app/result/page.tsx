@@ -12,7 +12,6 @@ import { getTongueImage, getFoodImage } from "@/lib/image-mapping";
 import { saveGuestHistory } from "@/lib/storage-utils";
 // import { supabase } from '@/lib/supabase';
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { is } from "date-fns/locale";
 
 interface DiagnosisResult {
   result_code: TongueType;
@@ -20,7 +19,7 @@ interface DiagnosisResult {
   imageFile: string;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function ResultPage() {
   const router = useRouter();
@@ -105,19 +104,20 @@ export default function ResultPage() {
   const displayTongueCoatingDesc = isZh
     ? analysisData.tongue_coating_desc.zh
     : analysisData.tongue_coating_desc.en;
-  // const displayName = analysisData.name;
-  // const displayQuote = analysisData.quote;
-  // const displayDesc = analysisData.desc;
-  // const displayAdvice = analysisData.advice;
-  // const displayTongueBodyDesc = analysisData.tongue_body_desc;
-  // const displayTongueCoatingDesc = analysisData.tongue_coating_desc;
-  const displayFoods = tongueData.foods.map((food: any) => {
-    return {
+  const displayFoods =
+    analysisData.foods?.map((food: any) => ({
       id: food.id,
-      name: isZh ? food.name.zh : food.name.en,
-      benefit: isZh ? food.benefit.zh : food.benefit.en,
-    };
-  });
+      name: isZh ? food.name?.zh : food.name?.en,
+      benefit: isZh ? food.benefitText?.zh : food.benefitText?.en,
+    })) ?? [];
+
+  // const displayFoods = tongueData.foods.map((food: any) => {
+  //   return {
+  //     id: food.id,
+  //     name: isZh ? food.name.zh : food.name.en,
+  //     benefit: isZh ? food.benefit.zh : food.benefit.en,
+  //   };
+  // });
 
   const handleReturn = async () => {
     if (user) {
@@ -220,6 +220,7 @@ export default function ResultPage() {
         if (!response.ok) throw new Error("Save to cloud failed");
 
         alert(isZh ? "已成功儲存" : "Saved Successfully");
+        router.push("/trends")
       } else {
         // 訪客：維持原本的 LocalStorage 邏輯
         if (result) {
@@ -362,7 +363,10 @@ export default function ResultPage() {
           </h2>
 
           <div className="space-y-4">
-            {tongueData.foods.map((food, index) => {
+            {tongueData.foods?.map((food, index) => {
+              {
+                /* {displayFoods.map((food: any, index:any) => { */
+              }
               const foodName = isZh ? food.name.zh : food.name.en;
               const foodNameEn = food.name.en;
               const foodNameZh = food.name.zh;
@@ -375,7 +379,6 @@ export default function ResultPage() {
               if (!foodImage) {
                 foodImage = getFoodImage(foodNameZh);
               }
-
 
               return (
                 <div
@@ -433,7 +436,7 @@ export default function ResultPage() {
         </div>
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4">
-          {isLoggedIn && (
+          {isLoggedIn && analysisData.id != 'no_tongue' &&(
             <button
               onClick={handleSave}
               disabled={saving}
