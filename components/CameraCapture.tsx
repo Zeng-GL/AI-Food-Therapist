@@ -268,8 +268,9 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
               <img
                 src={capturedImage}
                 alt={isZh ? '拍攝的舌頭照片' : 'Captured tongue'}
-                className="max-w-full max-h-full object-contain"
-                style={{ maxHeight: 'calc(100vh - 200px)' }}
+                // className="max-w-full max-h-full object-contain"
+                className="w-full h-full object-cover object-center"
+                style={{ maxHeight: 'calc(100vh - 200px)' }} 
               />
             </div>
 
