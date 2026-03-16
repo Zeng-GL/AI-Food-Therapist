@@ -17,6 +17,7 @@ const TONGUE_IMAGE_MAP: Record<string, string> = {
   'Teeth Marks (Scalloped)': '/assets/images/Tongues/Scalloped Tongue.png',
   'Scalloped Tongue': '/assets/images/Tongues/Scalloped Tongue.png',
   'Cracked Tongue': '/assets/images/Tongues/Cracked Tongue.png',
+  'No Tongue Detected':'/assets/images/Tongues/No Tongue.png',
   
   // 中文名稱映射
   '舌紅': '/assets/images/Tongues/Red Tongue.png',
@@ -27,6 +28,7 @@ const TONGUE_IMAGE_MAP: Record<string, string> = {
   '舌苔剝落': '/assets/images/Tongues/Peeled Tongue.png',
   '舌有齒痕': '/assets/images/Tongues/Scalloped Tongue.png',
   '舌有裂紋': '/assets/images/Tongues/Cracked Tongue.png',
+  '未偵測到舌頭':'/assets/images/Tongues/No Tongue.png'
 };
 
 /**
@@ -40,6 +42,7 @@ export const TONGUE_IMAGES: Record<TongueType, string> = {
   peeled: '/assets/images/Tongues/Peeled Tongue.png',
   teeth_marks: '/assets/images/Tongues/Scalloped Tongue.png',
   cracked: '/assets/images/Tongues/Cracked Tongue.png',
+  no_tongue: '/assets/images/Tongues/No Tongue.png'
 };
 
 /**
