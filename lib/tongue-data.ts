@@ -33,7 +33,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: 'Lotus seeds', zh: '蓮子' }, 
-        benefit: { en: 'Calm the mind and reduce internal heat', zh: '清心安神，降內火' },
+        benefit: { en: 'Calms the mind and reduces internal heat to restore inner peace', zh: '清心安神，能緩解心煩焦慮，並有助於降低體內虛火' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -42,7 +42,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Lily bulbs', zh: '百合' }, 
-        benefit: { en: 'Nourish yin and moisten dryness', zh: '滋陰潤燥' },
+        benefit: { en: 'Nourishes Yin and moistens dryness to soothe the respiratory system', zh: '滋陰潤燥，專門滋養肺部與喉嚨，修復因乾燥引起的不適' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -51,7 +51,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Mung bean soup', zh: '綠豆湯' }, 
-        benefit: { en: 'Clear heat and detoxify', zh: '清熱解毒' },
+        benefit: { en: 'Clears heat and detoxifies the body from accumulated toxins', zh: '清熱解毒，是夏季消暑、排除體內熱毒的經典食療' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -69,7 +69,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: 'Red dates', zh: '紅棗' }, 
-        benefit: { en: 'Tonify qi and nourish blood', zh: '補氣養血' },
+        benefit: { en: 'Tonifies Qi and nourishes blood to enhance energy levels', zh: '補氣養血，能提升氣色並增強脾胃能量' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -78,7 +78,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Goji berries', zh: '枸杞' }, 
-        benefit: { en: 'Nourish the liver and improve vision', zh: '養肝明目' },
+        benefit: { en: 'Nourishes the liver and improves vision for eye health', zh: '養肝明目，對長期用眼過度及肝腎陰虛有良好的補益作用' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -87,7 +87,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Chinese yam', zh: '山藥' }, 
-        benefit: { en: 'Strengthen spleen and kidney', zh: '健脾補腎' },
+        benefit: { en: 'Strengthens the spleen and kidney to support digestive health', zh: '健脾補腎，性質溫和，能強健消化系統並固腎益精' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -105,7 +105,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: "Job's tears", zh: '薏仁' }, 
-        benefit: { en: 'Drain dampness and promote urination', zh: '利水滲濕' },
+        benefit: { en: 'Drains dampness and promotes urination to reduce swelling', zh: '利水滲濕，有助於排除體內多餘水分，消除浮腫' },
         isVegan: true,
         isVegetarian: true,
         allergens: ['Gluten'],
@@ -114,7 +114,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'White radish', zh: '白蘿蔔' }, 
-        benefit: { en: 'Aid digestion', zh: '助消化' },
+        benefit: { en: 'Aids digestion and promotes smooth movement of Qi', zh: '助消化，能順氣消食，緩解腹脹不適' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -123,7 +123,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Winter melon', zh: '冬瓜' }, 
-        benefit: { en: 'Clear heat and promote urination', zh: '清熱利尿' },
+        benefit: { en: 'Clears heat and promotes urination to flush out excess heat', zh: '清熱利尿，透過增加代謝排尿來帶走體內的積熱' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -141,7 +141,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: 'Bitter melon', zh: '苦瓜' }, 
-        benefit: { en: 'Clears heat and relieves summer heat', zh: '清熱解暑' },
+        benefit: { en: 'Clears heat and relieves summer heat, ideal for cooling the body', zh: '清熱解暑，能瀉火除煩，特別適合火氣大時食用' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -150,7 +150,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Mung beans', zh: '綠豆' }, 
-        benefit: { en: 'Clear heat and detoxify', zh: '清熱解毒' },
+        benefit: { en: 'Clears heat and detoxifies to protect against heat-related fatigue', zh: '清熱解毒，強效排除體內暑氣與毒素' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -159,7 +159,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Aged tangerine peel', zh: '陳皮' }, 
-        benefit: { en: 'Strengthen spleen and regulate qi', zh: '健脾理氣' },
+        benefit: { en: 'Strengthens the spleen and regulates Qi to reduce bloating', zh: '健脾理氣，能燥濕化痰，讓脾胃運作更順暢' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -177,7 +177,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: 'Snow pear', zh: '雪梨' }, 
-        benefit: { en: 'Generate fluids and moisten dryness', zh: '生津潤燥' },
+        benefit: { en: 'Generates body fluids and moistens dryness to relieve thirst', zh: '生津潤燥，潤肺止咳，是補足身體水分的佳品' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -186,7 +186,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Fresh lily bulbs', zh: '鮮百合' }, 
-        benefit: { en: 'Nourish yin and moisten lungs', zh: '養陰潤肺' },
+        benefit: { en: 'Nourishes Yin and moistens the lungs for deeper hydration', zh: '養陰潤肺，口感更潤，能清心除煩並滋潤呼吸道' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -195,7 +195,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Millet porridge', zh: '小米粥' }, 
-        benefit: { en: 'Strengthen spleen and nourish stomach', zh: '健脾養胃' },
+        benefit: { en: 'Strengthens the spleen and nourishes the stomach for easy digestion', zh: '健脾養胃，極易消化，是病後或脾胃虛弱者的補品' },
         isVegan: true,
         isVegetarian: true,
         allergens: ['Gluten'],
@@ -213,7 +213,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: "Job's tears", zh: '薏仁' }, 
-        benefit: { en: 'Drain dampness', zh: '利水滲濕' },
+        benefit: { en: 'Drains dampness and promotes urination to reduce swelling', zh: '利水滲濕，有助於排除體內多餘水分，消除浮腫' },
         isVegan: true,
         isVegetarian: true,
         allergens: ['Gluten'],
@@ -222,7 +222,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Red beans', zh: '紅豆' }, 
-        benefit: { en: 'Strengthen spleen and remove dampness', zh: '健脾祛濕' },
+        benefit: { en: 'Strengthens the spleen and removes dampness from the body', zh: '健脾祛濕，側重於補血與代謝下肢水腫' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -231,7 +231,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Fresh ginger', zh: '生薑' }, 
-        benefit: { en: 'Warm the middle and expel dampness', zh: '溫中祛濕' },
+        benefit: { en: 'Warms the middle burner and expels dampness and cold', zh: '溫中祛濕，透過溫熱性質發汗散寒，驅除體內寒濕' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -249,7 +249,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
     foods: [
       { 
         name: { en: 'Black sesame', zh: '黑芝麻' }, 
-        benefit: { en: 'Nourish yin and moisten dryness', zh: '滋陰潤燥' },
+        benefit: { en: 'Nourishes Yin and moistens dryness for skin and hair health', zh: '滋陰潤燥，能潤腸通便並滋養頭髮與肌膚' },
         isVegan: true,
         isVegetarian: true,
         allergens: ['Nuts'],
@@ -258,7 +258,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'White fungus', zh: '銀耳' }, 
-        benefit: { en: 'Nourish yin and generate fluids', zh: '養陰生津' },
+        benefit: { en: 'Nourishes Yin and generates fluids to replenish collagen-like moisture', zh: '養陰生津，含有豐富膠質，能滋潤全身乾燥組織' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
@@ -267,7 +267,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
       },
       { 
         name: { en: 'Sugarcane juice', zh: '甘蔗汁' }, 
-        benefit: { en: 'Clear heat and generate fluids', zh: '清熱生津' },
+        benefit: { en: 'Clears heat and generates fluids to rapidly hydrate the body', zh: '清熱生津，能快速補給水分並緩解口乾舌燥' },
         isVegan: true,
         isVegetarian: true,
         allergens: [],
