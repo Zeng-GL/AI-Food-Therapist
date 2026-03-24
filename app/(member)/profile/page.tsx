@@ -74,6 +74,32 @@ export default function ProfilePage() {
     }
   };
 
+
+  const handleDeleteAccount = async (historyId: string) => {
+  if (!confirm('確定要刪除這筆紀錄嗎？')) return;
+
+  try {
+    const response = await fetch('/api/history', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ historyId }), // 關鍵：告訴後端要標記哪一天的紀錄
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('紀錄已刪除');
+      // 成功後，建議重新導向或刷新列表 State
+      window.location.reload(); 
+    } else {
+      throw new Error(data.error || '刪除失敗');
+    }
+  } catch (error) {
+    console.error('Delete error:', error);
+    alert('無法刪除紀錄，請稍後再試');
+  }
+};
+
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "zh" : "en");
   };
@@ -185,6 +211,15 @@ export default function ProfilePage() {
             <h2 className="text-lg font-bold text-gray-800">
               {isZh ? "帳號管理" : "Account Management"}
             </h2>
+          </div>
+          <div className="p-5">
+            <button
+              onClick={()=>handleDeleteAccount('')}
+              className="w-full py-3 px-4 bg-red-50 text-red-600 rounded-xl font-semibold hover:bg-red-100 transition-colors flex items-center justify-center space-x-2"
+            >
+              <LogOut size={20} />
+              <span>{isZh ? "刪除帳號資料" : "Log Out"}</span>
+            </button>
           </div>
           <div className="p-5">
             <button

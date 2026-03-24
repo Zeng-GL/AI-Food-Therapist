@@ -2,10 +2,15 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+  UpdateCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"; // 新增 S3 引用
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"; // 新增簽名工具
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 // 初始化 AWS Clients
 const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
@@ -28,25 +33,30 @@ export async function POST(req: Request) {
 
   try {
     const { diagnosisData, imageUrl } = await req.json();
-    
-    console.log(imageUrl)
-    
-    await ddb.send(new PutCommand({
-      TableName: "DiagnosisHistory",
-      Item: {
-        historyId: uuidv4(),
-        userId: (session.user as any).id,
-        email: session.user.email,
-        result: diagnosisData,
-        imageUrl: imageUrl,
-        createdAt: new Date().toISOString(),
-      },
-    }));
+
+    console.log(imageUrl);
+
+    await ddb.send(
+      new PutCommand({
+        TableName: "DiagnosisHistory",
+        Item: {
+          historyId: uuidv4(),
+          userId: (session.user as any).id,
+          email: session.user.email,
+          result: diagnosisData,
+          imageUrl: imageUrl,
+          createdAt: new Date().toISOString(),
+        },
+      }),
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DynamoDB Save Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -60,13 +70,18 @@ export async function GET(req: Request) {
     const userId = (session.user as any).id;
 
     // 1. 從 DynamoDB 撈取紀錄
-    const { Items } = await ddb.send(new QueryCommand({
-      TableName: "DiagnosisHistory",
-      KeyConditionExpression: "userId = :uid",
-      ExpressionAttributeValues: {
-        ":uid": userId,
-      },
-    }));
+    const { Items } = await ddb.send(
+      new QueryCommand({
+        TableName: "DiagnosisHistory",
+        KeyConditionExpression: "userId = :uid",
+        FilterExpression:
+          "attribute_not_exists(isDeleted) OR isDeleted = :false",
+        ExpressionAttributeValues: {
+          ":uid": userId,
+          ":false": false,
+        },
+      }),
+    );
 
     if (!Items) return NextResponse.json({ items: [] });
 
@@ -89,22 +104,65 @@ export async function GET(req: Request) {
           });
 
           // 生成有效期為 3600 秒 (1小時) 的讀取網址
-          const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+          const signedUrl = await getSignedUrl(s3Client, command, {
+            expiresIn: 3600,
+          });
 
           return {
             ...item,
             imageUrl: signedUrl, // 將資料庫的 Key 替換為臨時可訪問的網址
           };
         } catch (s3Error) {
-          console.error("Error signing S3 URL for key:", item.imageUrl, s3Error);
+          console.error(
+            "Error signing S3 URL for key:",
+            item.imageUrl,
+            s3Error,
+          );
           return item; // 簽名失敗則回傳原始資料
         }
-      })
+      }),
     );
 
     return NextResponse.json({ items: itemsWithSignedUrls });
   } catch (error) {
     console.error("DynamoDB Query Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const { historyId } = await req.json();
+    const userId = (session.user as any).id;
+
+    await ddb.send(
+      new UpdateCommand({
+        TableName: "DiagnosisHistory",
+        Key: {
+          userId: userId,
+          historyId: historyId,
+        },
+        // 加上 ConditionExpression 確保只能刪除自己的資料
+        UpdateExpression: "SET isDeleted = :deleted, updatedAt = :now",
+        ConditionExpression: "userId = :uid",
+        ExpressionAttributeValues: {
+          ":deleted": true,
+          ":now": new Date().toISOString(),
+          ":uid": userId,
+        },
+      }),
+    );
+
+    return NextResponse.json({ success: true, message: "Record soft-deleted" });
+  } catch (error) {
+    console.error("Soft delete history error:", error);
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
   }
 }

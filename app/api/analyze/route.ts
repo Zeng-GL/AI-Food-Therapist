@@ -52,7 +52,7 @@ ${JSON.stringify(tongue_ref_data, null, 2)}
     `;
 
     const result = await genAI.models.generateContent({
-      model: "gemini-3-flash-preview", //gemini-2.5-flash  gemini-3-flash-preview
+      model: "gemini-2.5-flash", //gemini-2.5-flash  gemini-3-flash-preview
       contents: [
         {
           inlineData: {

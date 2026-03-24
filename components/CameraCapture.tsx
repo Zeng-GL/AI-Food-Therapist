@@ -1,16 +1,23 @@
-'use client';
+"use client";
 
-import { useRef, useState, useEffect, useCallback } from 'react';
-import { Camera, X, RotateCcw, Check, Upload } from 'lucide-react';
-import { useLanguageStore } from '@/store/use-language-store';
-import { validateImageFile, compressImage, blobToFile } from '@/lib/image-utils';
+import { useRef, useState, useEffect, useCallback } from "react";
+import { Camera, X, RotateCcw, Check, Upload } from "lucide-react";
+import { useLanguageStore } from "@/store/use-language-store";
+import {
+  validateImageFile,
+  compressImage,
+  blobToFile,
+} from "@/lib/image-utils";
 
 interface CameraCaptureProps {
   onCapture: (file: File) => void;
   onClose: () => void;
 }
 
-export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
+export default function CameraCapture({
+  onCapture,
+  onClose,
+}: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -19,12 +26,12 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
-  const isZh = language === 'zh';
+  const isZh = language === "zh";
 
   // ── 停止相機：直接操作 ref，不依賴 state ─────────────────────────────
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => {
+      streamRef.current.getTracks().forEach((track) => {
         track.stop();
       });
       streamRef.current = null;
@@ -39,7 +46,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
   const startCamera = useCallback(async () => {
     // 先確保舊的 stream 已停止
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
 
@@ -48,12 +55,16 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: {
+          facingMode: "user",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
       });
 
       // 確認 component 還存在（避免 async race condition）
       if (!videoRef.current) {
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
         return;
       }
 
@@ -63,8 +74,12 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
       await videoRef.current.play();
       setIsStreaming(true);
     } catch (err) {
-      console.error('Camera error:', err);
-      setError(isZh ? '無法存取相機，請檢查權限設定' : 'Cannot access camera, please check permissions');
+      console.error("Camera error:", err);
+      setError(
+        isZh
+          ? "無法存取相機，請檢查權限設定"
+          : "Cannot access camera, please check permissions",
+      );
     }
   }, [isZh]);
 
@@ -75,21 +90,21 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
     // beforeunload 保險：瀏覽器關閉或重整時也停相機
     const handleUnload = () => {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
-    window.addEventListener('beforeunload', handleUnload);
+    window.addEventListener("beforeunload", handleUnload);
 
     return () => {
       // Component unmount（路由離開、登出等）時停相機
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
       }
       if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
-      window.removeEventListener('beforeunload', handleUnload);
+      window.removeEventListener("beforeunload", handleUnload);
     };
   }, []); // 只執行一次
 
@@ -105,14 +120,16 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
+    ctx.save();
+    ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+    ctx.restore();
 
-    setCapturedImage(canvas.toDataURL('image/jpeg', 0.9));
+    setCapturedImage(canvas.toDataURL("image/jpeg", 0.9));
   };
 
   // ── 重拍：停舊 stream 再重啟 ─────────────────────────────────────────
@@ -124,7 +141,9 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
   };
 
   // ── 上傳圖片 ─────────────────────────────────────────────────────────
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     stopCamera();
 
     const file = event.target.files?.[0];
@@ -132,15 +151,16 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
 
     const validation = validateImageFile(file);
     if (!validation.valid) {
-      setError(validation.error || 'Invalid image');
+      setError(validation.error || "Invalid image");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => setCapturedImage(e.target?.result as string);
-    reader.onerror = () => setError(isZh ? '讀取檔案失敗' : 'Failed to read file');
+    reader.onerror = () =>
+      setError(isZh ? "讀取檔案失敗" : "Failed to read file");
     reader.readAsDataURL(file);
-    event.target.value = '';
+    event.target.value = "";
   };
 
   // ── 分析：停相機 → 壓縮 → 回傳 ─────────────────────────────────────
@@ -154,23 +174,32 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
     try {
       const response = await fetch(capturedImage);
       const blob = await response.blob();
-      const originalFile = new File([blob], 'tongue.jpg', { type: 'image/jpeg' });
+      const originalFile = new File([blob], "tongue.jpg", {
+        type: "image/jpeg",
+      });
 
       const validation = validateImageFile(originalFile);
       if (!validation.valid) {
-        setError(validation.error || 'Invalid image');
+        setError(validation.error || "Invalid image");
         setIsCompressing(false);
         return;
       }
 
       const compressedBlob = await compressImage(originalFile);
-      const compressedFile = blobToFile(compressedBlob, 'tongue-compressed.jpg');
+      const compressedFile = blobToFile(
+        compressedBlob,
+        "tongue-compressed.jpg",
+      );
 
       setIsCompressing(false);
       onCapture(compressedFile);
     } catch (err) {
-      console.error('Error processing image:', err);
-      setError(isZh ? '圖片處理失敗，請重試' : 'Image processing failed, please try again');
+      console.error("Error processing image:", err);
+      setError(
+        isZh
+          ? "圖片處理失敗，請重試"
+          : "Image processing failed, please try again",
+      );
       setIsCompressing(false);
     }
   };
@@ -183,12 +212,12 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
           <button
             onClick={handleClose}
             className="p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
-            aria-label={isZh ? '關閉' : 'Close'}
+            aria-label={isZh ? "關閉" : "Close"}
           >
             <X size={24} />
           </button>
           <h2 className="text-white font-semibold">
-            {isZh ? '拍攝舌頭' : 'Capture Tongue'}
+            {isZh ? "拍攝舌頭" : "Capture Tongue"}
           </h2>
           <div className="w-10" />
         </div>
@@ -201,7 +230,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
               autoPlay
               playsInline
               muted
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover scale-x-[-1]"
             />
 
             {/* Tongue Guide Overlay */}
@@ -209,7 +238,9 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
               <svg
                 viewBox="0 0 200 300"
                 className="w-64 h-96 opacity-60"
-                style={{ filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' }}
+                style={{
+                  filter: "drop-shadow(0 0 10px rgba(255,255,255,0.5))",
+                }}
               >
                 <path
                   d="M 100 50 
@@ -229,8 +260,26 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
                   strokeDasharray="12,6"
                   strokeLinecap="round"
                 />
-                <line x1="100" y1="80" x2="100" y2="220" stroke="white" strokeWidth="2" strokeDasharray="8,4" opacity="0.5" />
-                <line x1="60" y1="150" x2="140" y2="150" stroke="white" strokeWidth="2" strokeDasharray="8,4" opacity="0.5" />
+                <line
+                  x1="100"
+                  y1="80"
+                  x2="100"
+                  y2="220"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeDasharray="8,4"
+                  opacity="0.5"
+                />
+                <line
+                  x1="60"
+                  y1="150"
+                  x2="140"
+                  y2="150"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeDasharray="8,4"
+                  opacity="0.5"
+                />
               </svg>
             </div>
 
@@ -239,7 +288,12 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
               {/* Upload */}
               <label className="w-16 h-16 bg-brand rounded-full border-4 border-white flex items-center justify-center shadow-2xl hover:opacity-90 cursor-pointer">
                 <Upload size={24} className="text-white" />
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
               </label>
 
               {/* Capture */}
@@ -247,7 +301,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
                 onClick={capturePhoto}
                 disabled={!isStreaming}
                 className="w-20 h-20 bg-white rounded-full border-4 border-gray-300 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-label={isZh ? '拍攝' : 'Capture'}
+                aria-label={isZh ? "拍攝" : "Capture"}
               >
                 {isStreaming ? (
                   <Camera size={32} className="text-gray-800" />
@@ -267,10 +321,10 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <img
                 src={capturedImage}
-                alt={isZh ? '拍攝的舌頭照片' : 'Captured tongue'}
+                alt={isZh ? "拍攝的舌頭照片" : "Captured tongue"}
                 // className="max-w-full max-h-full object-contain"
                 className="w-full h-full object-cover object-center"
-                style={{ maxHeight: 'calc(100vh - 200px)' }} 
+                style={{ maxHeight: "calc(100vh - 200px)" }}
               />
             </div>
 
@@ -281,7 +335,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
                 className="px-5 py-2 bg-white/90 rounded-full flex items-center space-x-1.5 text-sm font-semibold hover:bg-white transition-colors disabled:opacity-50"
               >
                 <RotateCcw size={18} />
-                <span>{isZh ? '重拍' : 'Retake'}</span>
+                <span>{isZh ? "重拍" : "Retake"}</span>
               </button>
 
               <button
@@ -292,12 +346,12 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
                 {isCompressing ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>{isZh ? '處理中...' : 'Processing...'}</span>
+                    <span>{isZh ? "處理中..." : "Processing..."}</span>
                   </>
                 ) : (
                   <>
                     <Check size={18} />
-                    <span>{isZh ? '分析' : 'Analyze'}</span>
+                    <span>{isZh ? "分析" : "Analyze"}</span>
                   </>
                 )}
               </button>
@@ -317,7 +371,6 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
     </div>
   );
 }
-
 
 // "use client";
 
@@ -622,7 +675,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraCaptureProps
 //               >
 //                 {/* 舌頭形狀路徑 - 更接近真實舌頭輪廓 */}
 //                 <path
-//                   d="M 100 50 
+//                   d="M 100 50
 //                      Q 140 60, 160 90
 //                      Q 180 120, 175 150
 //                      Q 170 180, 160 200
