@@ -37,7 +37,7 @@ export default function ProfilePage() {
         const { profile: dbProfile } = await res.json();
         if (!dbProfile) return;
 
-        console.log("DB profile:", dbProfile); // 確認 DB 資料
+        console.log("DB profile:", dbProfile);
 
         updateProfile({
           gender: dbProfile.gender ?? null,
@@ -58,47 +58,45 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [status, updateProfile]); // ← updateProfile 加進 dependency
+  }, [status, updateProfile]);
 
   const handleEditProfile = () => {
     router.push("/profile/health-profile");
   };
 
   const handleLogout = async () => {
-    if (confirm(isZh ? "確定要登出嗎？" : "Are you sure you want to log out?")) {
+    if (
+      confirm(isZh ? "確定要登出嗎？" : "Are you sure you want to delete your account? This action will also delete your health records and cannot be undone. Please confirm carefully before proceeding.")
+    ) {
       try {
         await signOut({ callbackUrl: "/", redirect: true });
       } catch (error) {
-        console.error("登出時發生錯誤:", error);
+        console.error("Logout Error:", error);
       }
     }
   };
 
+  const handleDeleteAccount = async () => {
+    // if (!confirm("確定要刪除這筆紀錄嗎？")) return;
+    if (
+      confirm(isZh ? "確定要刪除帳號嗎？此操作會一併刪除您的健康紀錄，且無法回復，請再三確認再執行此動作" : "Are you sure you want to log out?")
+    ) {
+      try {
+        // 呼叫帳號軟刪除 API
+        const res = await fetch("/api/user/profile", { method: "DELETE" });
 
-  const handleDeleteAccount = async (historyId: string) => {
-  if (!confirm('確定要刪除這筆紀錄嗎？')) return;
-
-  try {
-    const response = await fetch('/api/history', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ historyId }), // 關鍵：告訴後端要標記哪一天的紀錄
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert('紀錄已刪除');
-      // 成功後，建議重新導向或刷新列表 State
-      window.location.reload(); 
+        if (res.ok) {
+          alert(isZh ? "帳號及健康紀錄已成功刪除":"Sucessfully delete your account and health record");
+          // 必須在 API 完成後才執行 signOut
+          await signOut({ callbackUrl: "/" });
+        }
+      } catch (error) {
+        console.error("註銷失敗", error);
+      }
     } else {
-      throw new Error(data.error || '刪除失敗');
+      return;
     }
-  } catch (error) {
-    console.error('Delete error:', error);
-    alert('無法刪除紀錄，請稍後再試');
-  }
-};
+  };
 
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "zh" : "en");
@@ -111,14 +109,22 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-4">
           <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden border-4 border-white/30">
             {session?.user?.image ? (
-              <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+              <img
+                src={session.user.image}
+                alt="Avatar"
+                className="w-full h-full object-cover"
+              />
             ) : (
               <User size={40} className="text-white" />
             )}
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{session?.user?.name || "User"}</h1>
-            <p className="text-white/80 text-sm mt-1">{session?.user?.email || "user@example.com"}</p>
+            <h1 className="text-2xl font-bold">
+              {session?.user?.name || "User"}
+            </h1>
+            <p className="text-white/80 text-sm mt-1">
+              {session?.user?.email || "user@example.com"}
+            </p>
           </div>
         </div>
       </div>
@@ -142,21 +148,42 @@ export default function ProfilePage() {
           <div className="p-5 space-y-4">
             <ProfileItem
               label={onboardingText.q1.genderLabel[language]}
-              value={profile.gender ? onboardingText.q1.genderOptions[profile.gender][language] : "-"}
+              value={
+                profile.gender
+                  ? onboardingText.q1.genderOptions[profile.gender][language]
+                  : "-"
+              }
             />
             <ProfileItem
               label={onboardingText.q1.ageLabel[language]}
-              value={profile.ageGroup ? onboardingText.q1.ageOptions[profile.ageGroup][language] : "-"}
+              value={
+                profile.ageGroup
+                  ? onboardingText.q1.ageOptions[profile.ageGroup][language]
+                  : "-"
+              }
             />
             <ProfileItem
               label={onboardingText.q2.title[language]}
-              value={profile.primaryGoals.length > 0
-                ? profile.primaryGoals.map((goal) => onboardingText.q2.options[goal as HealthGoal][language]).join(", ")
-                : "-"}
+              value={
+                profile.primaryGoals.length > 0
+                  ? profile.primaryGoals
+                      .map(
+                        (goal) =>
+                          onboardingText.q2.options[goal as HealthGoal][
+                            language
+                          ],
+                      )
+                      .join(", ")
+                  : "-"
+              }
             />
             <ProfileItem
               label={onboardingText.q3.sleepLabel[language]}
-              value={profile.sleepHabit ? onboardingText.q3.sleepOptions[profile.sleepHabit][language] : "-"}
+              value={
+                profile.sleepHabit
+                  ? onboardingText.q3.sleepOptions[profile.sleepHabit][language]
+                  : "-"
+              }
             />
             <ProfileItem
               label={onboardingText.q3.stressLabel[language]}
@@ -164,9 +191,18 @@ export default function ProfilePage() {
             />
             <ProfileItem
               label={onboardingText.q4.allergiesLabel[language]}
-              value={profile.allergies.length > 0
-                ? profile.allergies.map((a) => onboardingText.q4.allergiesOptions[a as Allergy][language]).join(", ")
-                : "-"}
+              value={
+                profile.allergies.length > 0
+                  ? profile.allergies
+                      .map(
+                        (a) =>
+                          onboardingText.q4.allergiesOptions[a as Allergy][
+                            language
+                          ],
+                      )
+                      .join(", ")
+                  : "-"
+              }
             />
             <ProfileItem
               label={onboardingText.q4.dietLabel[language]}
@@ -174,9 +210,18 @@ export default function ProfilePage() {
             />
             <ProfileItem
               label={onboardingText.q4.medicalLabel[language]}
-              value={profile.medicalConditions.length > 0
-                ? profile.medicalConditions.map((m) => onboardingText.q4.medicalOptions[m as MedicalCondition][language]).join(", ")
-                : "-"}
+              value={
+                profile.medicalConditions.length > 0
+                  ? profile.medicalConditions
+                      .map(
+                        (m) =>
+                          onboardingText.q4.medicalOptions[
+                            m as MedicalCondition
+                          ][language],
+                      )
+                      .join(", ")
+                  : "-"
+              }
             />
           </div>
         </div>
@@ -195,10 +240,14 @@ export default function ProfilePage() {
             >
               <div className="flex items-center space-x-3">
                 <Globe size={20} className="text-gray-600" />
-                <span className="text-gray-800 font-medium">{isZh ? "語言" : "Language"}</span>
+                <span className="text-gray-800 font-medium">
+                  {isZh ? "語言" : "Language"}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-gray-600 text-sm">{language === "en" ? "English" : "中文"}</span>
+                <span className="text-gray-600 text-sm">
+                  {language === "en" ? "English" : "中文"}
+                </span>
                 <ChevronRight size={16} className="text-gray-400" />
               </div>
             </button>
@@ -212,15 +261,15 @@ export default function ProfilePage() {
               {isZh ? "帳號管理" : "Account Management"}
             </h2>
           </div>
-          <div className="p-5">
+          {/* <div className="p-5">
             <button
-              onClick={()=>handleDeleteAccount('')}
+              onClick={handleDeleteAccount}
               className="w-full py-3 px-4 bg-red-50 text-red-600 rounded-xl font-semibold hover:bg-red-100 transition-colors flex items-center justify-center space-x-2"
             >
               <LogOut size={20} />
               <span>{isZh ? "刪除帳號資料" : "Log Out"}</span>
             </button>
-          </div>
+          </div> */}
           <div className="p-5">
             <button
               onClick={handleLogout}
@@ -236,7 +285,9 @@ export default function ProfilePage() {
         <div className="text-center py-4">
           <p className="text-sm text-gray-500">AI Food Therapist v1.0.0</p>
           <p className="text-xs text-gray-400 mt-1">
-            {isZh ? "基於中醫舌診的智能食療助手" : "AI-powered tongue diagnosis & food therapy"}
+            {isZh
+              ? "基於中醫舌診的智能食療助手"
+              : "AI-powered tongue diagnosis & food therapy"}
           </p>
         </div>
       </div>
@@ -248,7 +299,9 @@ function ProfileItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-start">
       <dt className="text-sm text-gray-600 flex-shrink-0 w-1/3">{label}</dt>
-      <dd className="text-sm font-medium text-gray-800 flex-1 text-right">{value}</dd>
+      <dd className="text-sm font-medium text-gray-800 flex-1 text-right">
+        {value}
+      </dd>
     </div>
   );
 }

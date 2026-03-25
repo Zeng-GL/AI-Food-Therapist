@@ -1,3 +1,4 @@
+// app/api/user/profile/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
@@ -6,7 +7,6 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
   UpdateCommand,
-  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 
 const ddb = DynamoDBDocumentClient.from(
@@ -15,7 +15,10 @@ const ddb = DynamoDBDocumentClient.from(
 
 const TABLE_NAME = "Users";
 
-// GET /api/user/profile
+/**
+ * GET /api/user/profile
+ * 取得使用者檔案，若帳號已停用則回傳 404
+ */
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -32,13 +35,10 @@ export async function GET() {
       }),
     );
 
-    if (!Item) {
-      return NextResponse.json({ profile: null, onboardingCompleted: false });
-    }
-
+    // 如果找不到用戶，或者帳號狀態為已停用 (軟刪除狀態)
     if (!Item || Item.accountStatus === "DEACTIVATED") {
       return NextResponse.json(
-        { error: "Account not found or deactivated" },
+        { profile: null, onboardingCompleted: false, status: "DEACTIVATED" },
         { status: 404 },
       );
     }
@@ -56,7 +56,10 @@ export async function GET() {
   }
 }
 
-// PUT /api/user/profile
+/**
+ * PUT /api/user/profile
+ * 更新使用者檔案 / 重新激活帳號
+ */
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -75,17 +78,29 @@ export async function PUT(req: NextRequest) {
     );
   }
 
-  // 1. 動態構建更新參數
+  // --- 核心修改邏輯 ---
+  // 1. 基本更新參數：標記已完成導覽、更新時間
   const updateParts: string[] = [
     "onboardingCompleted = :done",
     "updatedAt = :updatedAt",
+    "accountStatus = :active", // 確保狀態設為 ACTIVE
   ];
+
   const exprAttrValues: Record<string, any> = {
     ":done": true,
     ":updatedAt": new Date().toISOString(),
+    ":active": "ACTIVE",
   };
 
-  // 定義哪些欄位允許從 body 更新
+  /**
+   * 方案一重點：
+   * 如果這是用戶「重新註冊/重新開始」，我們更新 lastJoinedAt。
+   * 之後 GET /api/history 會以此時間為準，只抓取之後的紀錄。
+   */
+  updateParts.push("lastJoinedAt = :now");
+  exprAttrValues[":now"] = new Date().toISOString();
+
+  // 2. 定義允許更新的欄位 (從前端傳來的問卷資料)
   const allowedFields = [
     "gender",
     "ageGroup",
@@ -102,7 +117,6 @@ export async function PUT(req: NextRequest) {
 
   allowedFields.forEach((field) => {
     if (body[field] !== undefined) {
-      // 只有當前端有傳這個 Key 時才更新
       updateParts.push(`${field} = :${field}`);
       exprAttrValues[`:${field}`] = body[field];
     }
@@ -128,28 +142,38 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+/**
+ * DELETE /api/user/profile
+ * 軟刪除：將帳號標記為停用
+ */
 export async function DELETE() {
   const session = await getServerSession(authOptions);
-  if (!session?.user)
+  if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const googleId = (session.user as any).id;
 
   try {
+    const now = new Date().toISOString();
     await ddb.send(
       new UpdateCommand({
         TableName: "Users",
         Key: { googleId },
-        UpdateExpression: "SET accountStatus = :status, deletedAt = :now",
+        UpdateExpression: "SET accountStatus = :status, deactivatedAt = :now", // Record moment
         ExpressionAttributeValues: {
-          ":status": "DEACTIVATED", // 或者用 isDeleted: true
-          ":now": new Date().toISOString(),
+          ":status": "DEACTIVATED",
+          ":now": now,
         },
       }),
     );
 
-    return NextResponse.json({ success: true, message: "Account deactivated" });
+    return NextResponse.json({
+      success: true,
+      message: "Account deactivated successfully.",
+    });
   } catch (error) {
+    console.error("Failed to deactivate account:", error);
     return NextResponse.json(
       { error: "Failed to deactivate account" },
       { status: 500 },

@@ -220,7 +220,7 @@ export default function ResultPage() {
         if (!response.ok) throw new Error("Save to cloud failed");
 
         alert(isZh ? "已成功儲存" : "Saved Successfully");
-        router.push("/trends")
+        router.push("/trends");
       } else {
         // 訪客：維持原本的 LocalStorage 邏輯
         if (result) {
@@ -276,38 +276,36 @@ export default function ResultPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         {/* Image Preview - User's Photo and Reference Tongue Image */}
-        <div className="bg-white rounded-lg shadow-lg p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* User's Photo */}
-            <div className="text-center">
-              <p className="text-sm text-text-secondary mb-2">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          {/* 使用 flex 並在 md 以上橫向排列，gap 保持一致 */}
+          <div className="flex flex-col md:flex-row gap-8 items-start justify-center">
+            {/* 左側：使用者照片 - 集中放大版 */}
+            <div className="flex-1 w-full flex flex-col items-center">
+              <p className="text-sm font-medium text-text-secondary mb-3">
                 {isZh ? "您的舌頭照片" : "Your Tongue Photo"}
               </p>
-              <div className="w-full max-w-xs mx-auto aspect-square">
+              {/* 關鍵：使用 aspect-square 確保是正方形，w-full 配合 flex-1 確保左右容器等寬 */}
+              <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-brand/20 overflow-hidden shadow-inner bg-gray-50">
                 <img
                   src={result.imageFile}
-                  alt={isZh ? "舌頭照片" : "Tongue image"}
-                  className="w-full h-full rounded-lg border-2 border-gray-200 object-cover"
+                  alt="User tongue"
+                  className="w-full h-full object-cover object-center scale-150"
                 />
               </div>
             </div>
 
-            {/* Reference Tongue Image */}
-            <div className="text-center">
-              <p className="text-sm text-text-secondary mb-2">
+            {/* 右側：參考舌像 - 標準比例版 */}
+            <div className="flex-1 w-full flex flex-col items-center">
+              <p className="text-sm font-medium text-text-secondary mb-3">
                 {isZh ? "參考舌像" : "Reference Tongue"}
               </p>
-              <div className="w-full max-w-xs mx-auto aspect-square">
+              {/* 這裡使用完全一樣的容器類別：w-full aspect-square max-w-[280px] */}
+              <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-dashed border-gray-300 overflow-hidden bg-gray-50 shadow-sm">
                 <img
                   src={getTongueImage(analysisData.id, analysisData.name)}
                   alt={displayName}
-                  className="w-full h-full rounded-lg border-2 border-gray-200 object-cover"
+                  className="w-full h-full object-contain p-2" // 使用 object-contain 確保參考圖不被裁切且完整顯示
                   onError={(e) => {
-                    const imagePath = getTongueImage(
-                      analysisData.id,
-                      analysisData.name,
-                    );
-                    console.error("Failed to load tongue image:", imagePath);
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
@@ -357,86 +355,92 @@ export default function ResultPage() {
         </div>
 
         {/* Food Recommendations */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">
-            {isZh ? "推薦食物" : "Recommended Foods"}
-          </h2>
+        {displayFoods.length > 0 ? (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">
+              {isZh ? "推薦食物" : "Recommended Foods"}
+            </h2>
 
-          <div className="space-y-4">
-            {tongueData.foods?.map((food, index) => {
-              {
-                /* {displayFoods.map((food: any, index:any) => { */
-              }
-              const foodName = isZh ? food.name.zh : food.name.en;
-              const foodNameEn = food.name.en;
-              const foodNameZh = food.name.zh;
+            <div className="space-y-4">
+              {tongueData.foods?.map((food, index) => {
+                {
+                  /* {displayFoods.map((food: any, index:any) => { */
+                }
+                const foodName = isZh ? food.name.zh : food.name.en;
+                const foodNameEn = food.name.en;
+                const foodNameZh = food.name.zh;
 
-              // 嘗試多種匹配方式（優先順序：當前語言 > 英文 > 中文）
-              let foodImage = getFoodImage(foodName);
-              if (!foodImage) {
-                foodImage = getFoodImage(foodNameEn);
-              }
-              if (!foodImage) {
-                foodImage = getFoodImage(foodNameZh);
-              }
+                // 嘗試多種匹配方式（優先順序：當前語言 > 英文 > 中文）
+                let foodImage = getFoodImage(foodName);
+                if (!foodImage) {
+                  foodImage = getFoodImage(foodNameEn);
+                }
+                if (!foodImage) {
+                  foodImage = getFoodImage(foodNameZh);
+                }
 
-              return (
-                <div
-                  key={index}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white flex items-center space-x-4"
-                >
-                  {/* 左側：圖片 */}
-                  <div className="w-20 h-20 flex-shrink-0">
-                    {foodImage ? (
-                      <img
-                        src={foodImage}
-                        alt={foodName}
-                        className="w-full h-full object-cover rounded-lg"
-                        onError={(e) => {
-                          console.error(
-                            "Failed to load food image:",
-                            foodImage,
-                          );
-                          // 載入失敗時顯示一個預設的食物圖片（使用第一個食物圖片作為預設）
-                          const defaultImage =
-                            "/assets/images/Foods/1. Lotus.png";
-                          if (
-                            (e.target as HTMLImageElement).src !== defaultImage
-                          ) {
-                            (e.target as HTMLImageElement).src = defaultImage;
-                          } else {
-                            // 如果預設圖片也載入失敗，隱藏圖片
-                            (e.target as HTMLImageElement).style.display =
-                              "none";
-                          }
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                        <span className="text-xs text-gray-400 text-center px-2">
-                          {foodName}
-                        </span>
-                      </div>
-                    )}
+                return (
+                  <div
+                    key={index}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white flex items-center space-x-4"
+                  >
+                    {/* 左側：圖片 */}
+                    <div className="w-20 h-20 flex-shrink-0">
+                      {foodImage ? (
+                        <img
+                          src={foodImage}
+                          alt={foodName}
+                          className="w-full h-full object-cover rounded-lg"
+                          onError={(e) => {
+                            console.error(
+                              "Failed to load food image:",
+                              foodImage,
+                            );
+                            // 載入失敗時顯示一個預設的食物圖片（使用第一個食物圖片作為預設）
+                            const defaultImage =
+                              "/assets/images/Foods/1. Lotus.png";
+                            if (
+                              (e.target as HTMLImageElement).src !==
+                              defaultImage
+                            ) {
+                              (e.target as HTMLImageElement).src = defaultImage;
+                            } else {
+                              // 如果預設圖片也載入失敗，隱藏圖片
+                              (e.target as HTMLImageElement).style.display =
+                                "none";
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                          <span className="text-xs text-gray-400 text-center px-2">
+                            {foodName}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 右側：名稱和功效 */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg text-primary-dark mb-1">
+                        {foodName}
+                      </h3>
+                      <p className="text-sm text-text-secondary">
+                        {isZh ? food.benefit.zh : food.benefit.en}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* 右側：名稱和功效 */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg text-primary-dark mb-1">
-                      {foodName}
-                    </h3>
-                    <p className="text-sm text-text-secondary">
-                      {isZh ? food.benefit.zh : food.benefit.en}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        ) : (
+          <></>
+        )}
+
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4">
-          {isLoggedIn && analysisData.id != 'no_tongue' &&(
+          {isLoggedIn && analysisData.id != "no_tongue" && (
             <button
               onClick={handleSave}
               disabled={saving}
@@ -467,5 +471,3 @@ export default function ResultPage() {
     </div>
   );
 }
-
-// { "name" : { "S" : "舌淡白" }, "id" : { "S" : "pale" }, "quote" : { "S" : "看起來有點虛，不妨多補充溫暖食物與休息🛌" }, "advice" : { "S" : "舌淡白常與氣血不足有關，適合溫補、健脾的食物，幫助提升體力與循環。" }, "desc" : { "S" : "虛寒體質、循環較弱" } }

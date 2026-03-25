@@ -7,6 +7,7 @@ import {
   PutCommand,
   QueryCommand,
   UpdateCommand,
+  GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"; // 新增 S3 引用
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"; // 新增簽名工具
@@ -133,13 +134,107 @@ export async function GET(req: Request) {
   }
 }
 
+
+/**
+ * GET /api/history
+ * 撈取該用戶「目前生命週期」內的所有紀錄
+ */
+// export async function GET(req: Request) {
+//   const session = await getServerSession(authOptions);
+//   if (!session?.user) {
+//     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//   }
+
+//   try {
+//     const userId = (session.user as any).id;
+
+//     // --- 步驟 A: 先從 Users 表查出最後一次註銷的時間 (deactivatedAt) ---
+//     const { Item: userProfile } = await ddb.send(
+//       new GetCommand({
+//         TableName: "Users",
+//         Key: { googleId: userId },
+//       }),
+//     );
+
+//     // 如果用戶已被標記為停用，則不回傳任何紀錄
+//     if (!userProfile || userProfile.accountStatus === "DEACTIVATED") {
+//       return NextResponse.json({ items: [] });
+//     }
+
+
+//     const lastDeletePoint = userProfile.deactivatedAt || "1970-01-01T00:00:00Z";
+
+//     // --- 步驟 B: 使用 GSI (userId-createdAt-index) 進行條件查詢 ---
+//     const { Items } = await ddb.send(
+//       new QueryCommand({
+//         TableName: "DiagnosisHistory",
+//         IndexName: "userId-createdAt-index", // 💡 請確保 Console 已建立此索引
+//         KeyConditionExpression: "userId = :uid AND createdAt > :lastDelete",
+//         FilterExpression: "attribute_not_exists(isDeleted) OR isDeleted = :false",
+//         ExpressionAttributeValues: {
+//           ":uid": userId,
+//           ":lastDelete": lastDeletePoint,
+//           ":false": false,
+//         },
+//         ScanIndexForward: false, // 最新的排在最前面
+//       }),
+//     );
+
+//     if (!Items || Items.length === 0) {
+//       return NextResponse.json({ items: [] });
+//     }
+
+//     // --- 步驟 C: 為圖片生成 S3 臨時網址 (Signed URL) ---
+//     const itemsWithSignedUrls = await Promise.all(
+//       Items.map(async (item) => {
+//         if (!item.imageUrl) return item;
+
+//         try {
+//           let s3Key = item.imageUrl;
+//           if (s3Key.includes("amazonaws.com/")) {
+//             s3Key = s3Key.split("amazonaws.com/")[1];
+//           }
+
+//           const command = new GetObjectCommand({
+//             Bucket: process.env.AWS_S3_BUCKET_NAME,
+//             Key: s3Key,
+//           });
+
+//           const signedUrl = await getSignedUrl(s3Client, command, {
+//             expiresIn: 3600,
+//           });
+
+//           return {
+//             ...item,
+//             imageUrl: signedUrl,
+//           };
+//         } catch (s3Error) {
+//           console.error(`S3 signing error for ${item.imageUrl}:`, s3Error);
+//           return item;
+//         }
+//       }),
+//     );
+
+//     return NextResponse.json({ items: itemsWithSignedUrls });
+//   } catch (error) {
+//     console.error("GET History Error:", error);
+//     return NextResponse.json(
+//       { error: "Internal Server Error" },
+//       { status: 500 },
+//     );
+//   }
+// }
+
+/**
+ * DELETE /api/history
+ * 單筆紀錄的軟刪除
+ */
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { historyId } = await req.json();
+    const { createdAt, historyId } = await req.json(); // 根據你的 Table Key 定義傳入
     const userId = (session.user as any).id;
 
     await ddb.send(
@@ -147,9 +242,8 @@ export async function DELETE(req: Request) {
         TableName: "DiagnosisHistory",
         Key: {
           userId: userId,
-          historyId: historyId,
+          historyId: historyId, 
         },
-        // 加上 ConditionExpression 確保只能刪除自己的資料
         UpdateExpression: "SET isDeleted = :deleted, updatedAt = :now",
         ConditionExpression: "userId = :uid",
         ExpressionAttributeValues: {
@@ -160,9 +254,9 @@ export async function DELETE(req: Request) {
       }),
     );
 
-    return NextResponse.json({ success: true, message: "Record soft-deleted" });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Soft delete history error:", error);
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    console.error("Delete history error:", error);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }

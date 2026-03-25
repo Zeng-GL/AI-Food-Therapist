@@ -131,18 +131,18 @@ export default function TrendsDetailPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* 圖片對比區 */}
+        {/* 圖片對比區
         <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <p className="text-center text-xs font-medium text-gray-500">
                 {isZh ? "您的舌照" : "Your Photo"}
               </p>
-              <div className="aspect-square rounded-xl overflow-hidden border bg-gray-50">
+              <div className="w-full max-w-xs mx-auto aspect-square rounded-lg border-2 border-gray-200 overflow-hidden">
                 <img
                   src={record.imageUrl}
                   alt="User tongue"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center scale-150 transition-transform duration-300"
                 />
               </div>
             </div>
@@ -155,6 +155,44 @@ export default function TrendsDetailPage() {
                   src={getTongueImage(record.resultCode, tongueData.name)}
                   alt="Reference tongue"
                   className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div> */}
+        {/* Image Preview - User's Photo and Reference Tongue Image */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          {/* 使用 flex 並在 md 以上橫向排列，gap 保持一致 */}
+          <div className="flex flex-col md:flex-row gap-8 items-start justify-center">
+            {/* 左側：使用者照片 - 集中放大版 */}
+            <div className="flex-1 w-full flex flex-col items-center">
+              <p className="text-sm font-medium text-text-secondary mb-3">
+                {isZh ? "您的舌頭照片" : "Your Tongue Photo"}
+              </p>
+              {/* 關鍵：使用 aspect-square 確保是正方形，w-full 配合 flex-1 確保左右容器等寬 */}
+              <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-brand/20 overflow-hidden shadow-inner bg-gray-50">
+                <img
+                  src={record.imageUrl}
+                  alt="User tongue"
+                  className="w-full h-full object-cover object-center scale-150"
+                />
+              </div>
+            </div>
+
+            {/* 右側：參考舌像 - 標準比例版 */}
+            <div className="flex-1 w-full flex flex-col items-center">
+              <p className="text-sm font-medium text-text-secondary mb-3">
+                {isZh ? "參考舌像" : "Reference Tongue"}
+              </p>
+              {/* 這裡使用完全一樣的容器類別：w-full aspect-square max-w-[280px] */}
+              <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-dashed border-gray-300 overflow-hidden bg-gray-50 shadow-sm">
+                <img
+                  src={getTongueImage(record.resultCode, tongueData.name)}
+                  alt={displayName}
+                  className="w-full h-full object-contain p-2" // 使用 object-contain 確保參考圖不被裁切且完整顯示
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
                 />
               </div>
             </div>
