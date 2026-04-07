@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Clarity from "@microsoft/clarity";
 
 export default function ClarityAnalytics() {
-  const projectId = process.env.CLARITY_PROJECT_ID;
+  const projectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
 
   useEffect(() => {
     // 確保只在瀏覽器端執行

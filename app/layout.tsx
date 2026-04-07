@@ -6,7 +6,7 @@ import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import ClarityAnalytics from "@/components/ClarityAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
-const gaId = process.env.GA_ID;
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: "AI Food Therapist - Tongue Diagnosis",
