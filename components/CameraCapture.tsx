@@ -8,6 +8,7 @@ import {
   compressImage,
   blobToFile,
 } from "@/lib/image-utils";
+import { sendGAEvent } from '@next/third-parties/google'
 
 interface CameraCaptureProps {
   onCapture: (file: File) => void;
@@ -131,6 +132,11 @@ export default function CameraCapture({
     ctx.restore();
 
     setCapturedImage(canvas.toDataURL("image/jpeg", 0.9));
+    // 發送 GA 事件：使用者點擊了拍照
+    sendGAEvent('event', 'camera_capture', {
+      event_category: 'engagement',
+      event_label: 'user_took_photo'
+    });
   };
 
   // ── 重拍：停舊 stream 再重啟 ─────────────────────────────────────────

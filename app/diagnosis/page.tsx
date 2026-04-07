@@ -7,17 +7,17 @@ import CameraCapture from "@/components/CameraCapture";
 import { useLanguageStore } from "@/store/use-language-store";
 import { useSession } from "next-auth/react";
 import { useResultStore } from "@/store/use-result-store";
+import { sendGAEvent } from '@next/third-parties/google'
 
 type Step = "disclaimer" | "camera" | "analyzing";
 
-export const dynamic = 'force-dynamic';
-
+export const dynamic = "force-dynamic";
 
 export default function DiagnosisPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
   const { data: session, status } = useSession();
-  
+
   // ✅ 防護 1：將所有狀態初始化為安全值
   const [isGuest, setIsGuest] = useState<boolean>(false);
   const [step, setStep] = useState<Step>("disclaimer");
@@ -87,7 +87,6 @@ export default function DiagnosisPage() {
       const data = await resAnalysis.json();
       setAnalysisData(data.result, key);
 
-      
       if (typeof window !== "undefined") {
         sessionStorage.setItem(
           "diagnosis_result",
@@ -99,10 +98,20 @@ export default function DiagnosisPage() {
         );
       }
 
+      // 發送 GA 事件：使用者點擊了拍照
+      sendGAEvent("event", "analyze_image", {
+        event_category: "engagement",
+        event_label: "user_analyzed_image",
+      });
+
       router.push("/result");
     } catch (error) {
       console.error("Process error:", error);
-      alert(isZh ? "處理失敗：" + (error as Error).message : "Failed: " + (error as Error).message);
+      alert(
+        isZh
+          ? "處理失敗：" + (error as Error).message
+          : "Failed: " + (error as Error).message,
+      );
       setStep("camera");
     }
   };
@@ -143,7 +152,9 @@ export default function DiagnosisPage() {
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
           <div className="text-center space-y-6">
             <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-xl font-semibold">{analysisStep || (isZh ? "處理中..." : "Processing...")}</p>
+            <p className="text-xl font-semibold">
+              {analysisStep || (isZh ? "處理中..." : "Processing...")}
+            </p>
           </div>
         </div>
       )}

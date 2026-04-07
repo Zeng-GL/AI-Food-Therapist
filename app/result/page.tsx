@@ -12,6 +12,7 @@ import { getTongueImage, getFoodImage } from "@/lib/image-mapping";
 import { saveGuestHistory } from "@/lib/storage-utils";
 // import { supabase } from '@/lib/supabase';
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { sendGAEvent } from "@next/third-parties/google";
 
 interface DiagnosisResult {
   result_code: TongueType;
@@ -219,6 +220,11 @@ export default function ResultPage() {
 
         if (!response.ok) throw new Error("Save to cloud failed");
 
+        sendGAEvent('event', 'photo_upload_success', {
+        event_category: 'conversion',
+        method: 'database_storage'
+      });
+
         alert(isZh ? "已成功儲存" : "Saved Successfully");
         router.push("/trends");
       } else {
@@ -246,8 +252,12 @@ export default function ResultPage() {
         }
       }
       setAutoSaved(true);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      // console.error(err);
+      // 也可以追蹤失敗率，這對除錯很有幫助
+      sendGAEvent('event', 'photo_upload_fail', {
+        error_msg: error instanceof Error ? error.message : 'Unknown error'
+      })
       alert("Error saving data");
     } finally {
       setSaving(false);
