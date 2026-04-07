@@ -207,7 +207,8 @@ export default function HomePage() {
         )}
 
         {/* Food Recommendations */}
-        {recommendedFoods.length > 0 && (
+
+        {hasScanToday && recommendedFoods.length > 0 ? (
           <div className="bg-white rounded-2xl shadow-md p-5">
             <h2 className="text-lg font-bold text-gray-800 mb-2">
               {isZh ? "今日為您推薦" : "Today's Food for You"}
@@ -226,6 +227,8 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        ) : (
+          <></>
         )}
 
         {/* Empty State */}
