@@ -1,206 +1,111 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw, Save, ArrowLeft } from "lucide-react";
 import { useLanguageStore } from "@/store/use-language-store";
-// import { useAuthStore } from '@/store/use-auth-store';
 import { useSession } from "next-auth/react";
 import { useResultStore } from "@/store/use-result-store";
-import { getTongueData, TongueType } from "@/lib/tongue-data";
 import { getTongueImage, getFoodImage } from "@/lib/image-mapping";
-import { saveGuestHistory } from "@/lib/storage-utils";
-// import { supabase } from '@/lib/supabase';
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { sendGAEvent } from "@next/third-parties/google";
 
+// --- 型別定義 ---
 interface DiagnosisResult {
-  result_code: TongueType;
+  result_code: string;
   confidence: number;
   imageFile: string;
 }
 
-export const dynamic = "force-dynamic";
+interface Translation {
+  en: string;
+  zh: string;
+}
+
+interface AnalysisData {
+  id: string;
+  name: Translation;
+  description: Translation;
+  quote: Translation;
+  advice: Translation;
+  tongue_body_desc?: Translation;
+  tongue_coating_desc?: Translation;
+  foods: Array<{
+    id: string;
+    name: Translation;
+    benefitText: Translation;
+  }>;
+}
 
 export default function ResultPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
-  // const { isLoggedIn, user: authStoreUser } = useAuthStore();
   const { data: session, status } = useSession();
-  const isGuest =
-    typeof window !== "undefined" &&
-    sessionStorage.getItem("is_guest") === "true";
+  
+  const isGuest = typeof window !== "undefined" && sessionStorage.getItem("is_guest") === "true";
   const isLoggedIn = status === "authenticated" && !isGuest;
-  const _analysisData = useResultStore((state) => state.analysisResult);
-  let analysisData: any = null;
-  const imageUrl = useResultStore((state) => state.imageUrl);
-  const [result, setResult] = useState<DiagnosisResult | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [autoSaved, setAutoSaved] = useState(false);
   const isZh = language === "zh";
 
-  // 根據 session 決定 user 物件（包含訪客和會員）
-  const user =
-    isLoggedIn && session?.user
-      ? {
-          id: (session.user as any).id, // 在[...nextauth] 設定的 token.sub
-          name: session.user.name,
-          email: session.user.email,
-          image: session.user.image,
-          provider: "google", // 之後如果加了 email 登入，這裡可以動態區分
-        }
-      : null;
+  // 從 Zustand 取得原始資料
+  const _analysisData = useResultStore((state) => state.analysisResult);
+  const imageUrl = useResultStore((state) => state.imageUrl);
+
+  const [result, setResult] = useState<DiagnosisResult | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // 解析後的強型別資料
+  let analysisData: AnalysisData | null = null;
+  if (_analysisData) {
+    try {
+      analysisData = JSON.parse(_analysisData) as AnalysisData;
+    } catch (e) {
+      console.error("Failed to parse analysis data", e);
+    }
+  }
 
   useEffect(() => {
     const stored = sessionStorage.getItem("diagnosis_result");
     if (stored) {
       setResult(JSON.parse(stored));
-    } else {
-      router.push("/");
+    } else if (!analysisData && !imageUrl) {
+      router.push("/diagnosis");
     }
-  }, [router]);
+  }, [router, analysisData, imageUrl]);
 
-  // 自動儲存：如果用戶已登入且尚未儲存
-  // useEffect(() => {
-  //   if (result && user && !isGuest && !autoSaved) {
-  //     handleAutoSave();
-  //   }
-  // }, [result, user, isGuest, autoSaved]);
-
-  useEffect(() => {
-    if (!analysisData && !imageUrl) {
-      console.log("No data found in Zustand, checking sessionStorage...");
-      const stored = sessionStorage.getItem("diagnosis_result");
-      if (!stored) router.push("/diagnosis");
-    }
-  }, [analysisData, imageUrl, router]);
-
-  if (!result) {
+  // --- 渲染前的防禦檢查 ---
+  if (!result || !analysisData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
-          <p>{isZh ? "載入中..." : "Loading..."}</p>
+          <p className="text-text-secondary">{isZh ? "載入中..." : "Loading..."}</p>
         </div>
       </div>
     );
   }
 
-  if (_analysisData) {
-    try {
-      analysisData = JSON.parse(_analysisData);
-      // console.log("Parsed analysis data", analysisData);
-    } catch (e) {
-      console.error("分析結果不是有效 JSON", e);
-    }
-  }
-
-  const tongueData = getTongueData(analysisData.id);
+  // --- 資料顯示映射 ---
   const displayName = isZh ? analysisData.name.zh : analysisData.name.en;
   const displayQuote = isZh ? analysisData.quote.zh : analysisData.quote.en;
-  const displayDesc = isZh ? analysisData.desc.zh : analysisData.desc.en;
+  const displayDesc = isZh ? analysisData.description.zh : analysisData.description.en;
   const displayAdvice = isZh ? analysisData.advice.zh : analysisData.advice.en;
-  const displayTongueBodyDesc = isZh
-    ? analysisData.tongue_body_desc.zh
-    : analysisData.tongue_body_desc.en;
-  const displayTongueCoatingDesc = isZh
-    ? analysisData.tongue_coating_desc.zh
-    : analysisData.tongue_coating_desc.en;
-  const displayFoods =
-    analysisData.foods?.map((food: any) => ({
-      id: food.id,
-      name: isZh ? food.name?.zh : food.name?.en,
-      benefit: isZh ? food.benefitText?.zh : food.benefitText?.en,
-    })) ?? [];
+  
+  const displayTongueBody = isZh 
+    ? analysisData.tongue_body_desc?.zh 
+    : analysisData.tongue_body_desc?.en;
+  const displayTongueCoating = isZh 
+    ? analysisData.tongue_coating_desc?.zh 
+    : analysisData.tongue_coating_desc?.en;
 
-  // const displayFoods = tongueData.foods.map((food: any) => {
-  //   return {
-  //     id: food.id,
-  //     name: isZh ? food.name.zh : food.name.en,
-  //     benefit: isZh ? food.benefit.zh : food.benefit.en,
-  //   };
-  // });
+  const displayFoods = analysisData.foods.map((food) => ({
+    name: isZh ? food.name.zh : food.name.en,
+    benefit: isZh ? food.benefitText.zh : food.benefitText.en,
+    originalName: food.name.en, // 用於圖片匹配
+  }));
 
-  const handleReturn = async () => {
-    if (user) {
-      // auto save
-      // try {
-
-      // } catch (error) {
-      //   console.error("Failed to save guest history:", error);
-      // }
-
-      router.push("/home");
-    } else {
-      router.push("/");
-    }
+  // --- 處理函式 ---
+  const handleReturn = () => {
+    isLoggedIn ? router.push("/home") : router.push("/");
   };
-
-  // const handleAutoSave = async () => {
-  //   if (!user || !result) return;
-
-  //   // Mock 模式下：儲存到 localStorage 的 tongue_history
-  //   const useMockMode = process.env.NEXT_PUBLIC_USE_MOCK_MODE === 'true';
-  //   if (useMockMode) {
-  //     console.log('⚠️ Mock mode: Saving to localStorage');
-
-  //     // 儲存到 localStorage (供 /trends 健康日誌使用)
-  //     try {
-  //       const history = localStorage.getItem('tongue_history');
-  //       const records = history ? JSON.parse(history) : [];
-  //       records.push({
-  //         id: `record-${Date.now()}`,
-  //         resultCode: result.result_code,
-  //         timestamp: Date.now(),
-  //         imageUrl: result.imageFile,
-  //       });
-  //       localStorage.setItem('tongue_history', JSON.stringify(records));
-  //     } catch (error) {
-  //       console.error('Failed to save to localStorage:', error);
-  //     }
-
-  //     setAutoSaved(true);
-  //     console.log('✅ 自動儲存成功 (localStorage)');
-  //     return;
-  //   }
-
-  //   setSaving(true);
-  //   try {
-  //     // 上傳圖片到 Supabase Storage
-  //     const imageBlob = await (await fetch(result.imageFile)).blob();
-  //     const fileName = `${user.id}/${Date.now()}.jpg`;
-  //     const { data: uploadData, error: uploadError } = await supabase.storage
-  //       .from('tongue-images')
-  //       .upload(fileName, imageBlob, {
-  //         contentType: 'image/jpeg',
-  //       });
-
-  //     if (uploadError) throw uploadError;
-
-  //     // 取得公開 URL
-  //     const { data: urlData } = supabase.storage
-  //       .from('tongue-images')
-  //       .getPublicUrl(fileName);
-
-  //     // 儲存到 History 表
-  //     const { error: dbError } = await supabase
-  //       .from('history')
-  //       .insert({
-  //         user_id: user.id,
-  //         image_url: urlData.publicUrl,
-  //         result_code: result.result_code,
-  //       });
-
-  //     if (dbError) throw dbError;
-
-  //     setAutoSaved(true);
-  //     console.log('✅ 自動儲存成功');
-  //   } catch (error) {
-  //     console.error('Auto-save error:', error);
-  //     // 自動儲存失敗不顯示錯誤，用戶仍可手動儲存
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
 
   const handleSave = async () => {
     if (saving) return;
@@ -208,7 +113,6 @@ export default function ResultPage() {
 
     try {
       if (isLoggedIn) {
-        // 會員：呼叫後端 API
         const response = await fetch("/api/history", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -218,260 +122,141 @@ export default function ResultPage() {
           }),
         });
 
-        if (!response.ok) throw new Error("Save to cloud failed");
+        if (!response.ok) throw new Error("Cloud save failed");
 
-        sendGAEvent('event', 'photo_upload_success', {
-        event_category: 'conversion',
-        method: 'database_storage'
-      });
-
+        sendGAEvent("event", "photo_upload_success", { method: "database" });
         alert(isZh ? "已成功儲存" : "Saved Successfully");
         router.push("/trends");
       } else {
-        // 訪客：維持原本的 LocalStorage 邏輯
-        if (result) {
-          localStorage.setItem(
-            "pending_save_result",
-            JSON.stringify({
-              result_code: result.result_code,
-              confidence: result.confidence,
-              imageFile: result.imageFile,
-              timestamp: Date.now(),
-            }),
-          );
-        }
-
-        if (
-          confirm(
-            isZh
-              ? "儲存記錄需要登入，是否要登入？"
-              : "Saving records requires login. Would you like to sign in?",
-          )
-        ) {
+        // 訪客逻辑：存入 localStorage 並引導登入
+        localStorage.setItem("pending_save_result", JSON.stringify({ ...result, timestamp: Date.now() }));
+        if (confirm(isZh ? "儲存記錄需要登入，是否要登入？" : "Please sign in to save your records.")) {
           router.push("/auth/choose");
         }
       }
-      setAutoSaved(true);
     } catch (error) {
-      // console.error(err);
-      // 也可以追蹤失敗率，這對除錯很有幫助
-      sendGAEvent('event', 'photo_upload_fail', {
-        error_msg: error instanceof Error ? error.message : 'Unknown error'
-      })
+      sendGAEvent("event", "photo_upload_fail", { 
+        error: error instanceof Error ? error.message : "Unknown" 
+      });
       alert("Error saving data");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleTestAgain = () => {
-    router.push("/diagnosis");
-  };
-
   return (
     <div className="min-h-screen bg-surface">
-      {/* Header */}
       <header className="w-full p-4 flex items-center justify-between">
-        <button
-          onClick={handleReturn}
-          className="p-2 hover:bg-brand/10 rounded-lg transition-colors text-brand-muted"
-        >
+        <button onClick={handleReturn} className="p-2 hover:bg-brand/10 rounded-lg transition-colors text-brand-muted">
           <ArrowLeft size={24} />
         </button>
-        {/* 只在訪客模式下顯示語言切換器 */}
         {isGuest && <LanguageSwitcher />}
-        {/* 會員模式下保持對稱 */}
         {!isGuest && <div className="w-10"></div>}
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* Image Preview - User's Photo and Reference Tongue Image */}
+        {/* 圖片對比區域 */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          {/* 使用 flex 並在 md 以上橫向排列，gap 保持一致 */}
           <div className="flex flex-col md:flex-row gap-8 items-start justify-center">
-            {/* 左側：使用者照片 - 集中放大版 */}
+            {/* 使用者照片 */}
             <div className="flex-1 w-full flex flex-col items-center">
               <p className="text-sm font-medium text-text-secondary mb-3">
                 {isZh ? "您的舌頭照片" : "Your Tongue Photo"}
               </p>
-              {/* 關鍵：使用 aspect-square 確保是正方形，w-full 配合 flex-1 確保左右容器等寬 */}
               <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-brand/20 overflow-hidden shadow-inner bg-gray-50">
-                <img
-                  src={result.imageFile}
-                  alt="User tongue"
-                  className="w-full h-full object-cover object-center scale-150"
-                />
+                <img src={result.imageFile} alt="User tongue" className="w-full h-full object-cover scale-150" />
               </div>
             </div>
 
-            {/* 右側：參考舌像 - 標準比例版 */}
+            {/* 參考圖 */}
             <div className="flex-1 w-full flex flex-col items-center">
               <p className="text-sm font-medium text-text-secondary mb-3">
                 {isZh ? "參考舌像" : "Reference Tongue"}
               </p>
-              {/* 這裡使用完全一樣的容器類別：w-full aspect-square max-w-[280px] */}
               <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-dashed border-gray-300 overflow-hidden bg-gray-50 shadow-sm">
-                <img
-                  src={getTongueImage(analysisData.id, analysisData.name)}
-                  alt={displayName}
-                  className="w-full h-full object-contain p-2" // 使用 object-contain 確保參考圖不被裁切且完整顯示
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
+                <img 
+                  src={getTongueImage(analysisData.id as any, analysisData.name)} 
+                  alt={displayName} 
+                  className="w-full h-full object-contain p-2"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Diagnosis Result */}
+        {/* 診斷結果詳情 */}
         <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-gray-900">{displayName}</h1>
             <p className="text-lg text-gray-600">{displayDesc}</p>
           </div>
 
-          {/* Quote */}
           <div className="bg-brand/10 border-l-4 border-brand p-4 rounded">
             <p className="text-lg italic text-gray-800">{displayQuote}</p>
           </div>
 
-          {/* Advice */}
           <div className="pt-4">
-            <h2 className="text-xl font-semibold mb-2">
-              {isZh ? "健康建議" : "Health Advice"}
-            </h2>
+            <h2 className="text-xl font-semibold mb-2">{isZh ? "健康建議" : "Health Advice"}</h2>
             <p className="text-gray-700">{displayAdvice}</p>
           </div>
 
           {isLoggedIn && (
-            <>
-              {/* Tongue Analysis */}
-              <div className="pt-4">
-                <h2 className="text-xl font-semibold mb-2">
-                  {isZh ? "舌體分析" : "Tongue Body Analysis"}
-                </h2>
-                <p className="text-gray-700">{displayTongueBodyDesc}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+              <div>
+                <h3 className="font-semibold text-brand">{isZh ? "舌體分析" : "Body Analysis"}</h3>
+                <p className="text-sm text-gray-600">{displayTongueBody || "N/A"}</p>
               </div>
-
-              <div className="pt-4">
-                <h2 className="text-xl font-semibold mb-2">
-                  {isZh ? "舌苔分析" : "Tongue Coating Analysis"}
-                </h2>
-                <p className="text-gray-700">{displayTongueCoatingDesc}</p>
+              <div>
+                <h3 className="font-semibold text-brand">{isZh ? "舌苔分析" : "Coating Analysis"}</h3>
+                <p className="text-sm text-gray-600">{displayTongueCoating || "N/A"}</p>
               </div>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Food Recommendations */}
-        {displayFoods.length > 0 ? (
+        {/* 食物推薦 */}
+        {displayFoods.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-4">
-              {isZh ? "推薦食物" : "Recommended Foods"}
-            </h2>
-
+            <h2 className="text-2xl font-bold mb-4">{isZh ? "推薦食物" : "Recommended Foods"}</h2>
             <div className="space-y-4">
-              {tongueData.foods?.map((food, index) => {
-                {
-                  /* {displayFoods.map((food: any, index:any) => { */
-                }
-                const foodName = isZh ? food.name.zh : food.name.en;
-                const foodNameEn = food.name.en;
-                const foodNameZh = food.name.zh;
-
-                // 嘗試多種匹配方式（優先順序：當前語言 > 英文 > 中文）
-                let foodImage = getFoodImage(foodName);
-                if (!foodImage) {
-                  foodImage = getFoodImage(foodNameEn);
-                }
-                if (!foodImage) {
-                  foodImage = getFoodImage(foodNameZh);
-                }
-
+              {displayFoods.map((food, index) => {
+                const foodImage = getFoodImage(food.name) || getFoodImage(food.originalName);
                 return (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white flex items-center space-x-4"
-                  >
-                    {/* 左側：圖片 */}
+                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow flex items-center space-x-4">
                     <div className="w-20 h-20 flex-shrink-0">
-                      {foodImage ? (
-                        <img
-                          src={foodImage}
-                          alt={foodName}
-                          className="w-full h-full object-cover rounded-lg"
-                          onError={(e) => {
-                            console.error(
-                              "Failed to load food image:",
-                              foodImage,
-                            );
-                            // 載入失敗時顯示一個預設的食物圖片（使用第一個食物圖片作為預設）
-                            const defaultImage =
-                              "/assets/images/Foods/1. Lotus.png";
-                            if (
-                              (e.target as HTMLImageElement).src !==
-                              defaultImage
-                            ) {
-                              (e.target as HTMLImageElement).src = defaultImage;
-                            } else {
-                              // 如果預設圖片也載入失敗，隱藏圖片
-                              (e.target as HTMLImageElement).style.display =
-                                "none";
-                            }
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                          <span className="text-xs text-gray-400 text-center px-2">
-                            {foodName}
-                          </span>
-                        </div>
-                      )}
+                      <img 
+                        src={foodImage || "/assets/images/Foods/1. Lotus.png"} 
+                        alt={food.name} 
+                        className="w-full h-full object-cover rounded-lg"
+                      />
                     </div>
-
-                    {/* 右側：名稱和功效 */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg text-primary-dark mb-1">
-                        {foodName}
-                      </h3>
-                      <p className="text-sm text-text-secondary">
-                        {isZh ? food.benefit.zh : food.benefit.en}
-                      </p>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-primary-dark">{food.name}</h3>
+                      <p className="text-sm text-text-secondary">{food.benefit}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-        ) : (
-          <></>
         )}
 
-        {/* Actions */}
+        {/* 操作按鈕 */}
         <div className="flex flex-col sm:flex-row gap-4">
-          {isLoggedIn && analysisData.id != "no_tongue" && (
+          {analysisData.id !== "no_tongue" && (
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 py-3 px-6 bg-brand text-white rounded-full font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+              className="flex-1 py-3 px-6 bg-brand text-white rounded-full font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               <Save size={20} />
-              <span>
-                {saving
-                  ? isZh
-                    ? "儲存中..."
-                    : "Saving..."
-                  : isZh
-                    ? "儲存到歷史記錄"
-                    : "Save to History"}
-              </span>
+              <span>{saving ? (isZh ? "儲存中..." : "Saving...") : (isZh ? "儲存記錄" : "Save Record")}</span>
             </button>
           )}
 
           <button
-            onClick={handleTestAgain}
-            className="flex-1 py-3 px-6 bg-brand-muted text-white rounded-full font-semibold hover:opacity-90 transition-colors flex items-center justify-center space-x-2"
+            onClick={() => router.push("/diagnosis")}
+            className="flex-1 py-3 px-6 bg-brand-muted text-white rounded-full font-semibold hover:opacity-90 transition-all flex items-center justify-center space-x-2"
           >
             <RotateCcw size={20} />
             <span>{isZh ? "再次檢測" : "Test Again"}</span>
