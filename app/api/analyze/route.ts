@@ -70,7 +70,7 @@ ${JSON.stringify(simplifiedKB)}`;
             },
           ],
           response_format: { type: "json_object" },
-          max_tokens: 1500,
+          max_tokens: 2000,
         });
 
         const content = completion.choices[0].message.content;
