@@ -41,8 +41,10 @@ export default function ResultPage() {
   const router = useRouter();
   const { language } = useLanguageStore();
   const { data: session, status } = useSession();
-  
-  const isGuest = typeof window !== "undefined" && sessionStorage.getItem("is_guest") === "true";
+
+  const isGuest =
+    typeof window !== "undefined" &&
+    sessionStorage.getItem("is_guest") === "true";
   const isLoggedIn = status === "authenticated" && !isGuest;
   const isZh = language === "zh";
 
@@ -64,20 +66,31 @@ export default function ResultPage() {
   }
 
   useEffect(() => {
+    // 增加一個判斷：如果 result 已經有資料了，就不要再 set 了
+    if (result) return;
+
     const stored = sessionStorage.getItem("diagnosis_result");
     if (stored) {
-      setResult(JSON.parse(stored));
+      try {
+        const parsed = JSON.parse(stored);
+        setResult(parsed);
+      } catch (e) {
+        console.error("Failed to parse stored result", e);
+      }
     } else if (!analysisData && !imageUrl) {
+      // 只有在完全沒資料的情況下才跳轉
       router.push("/diagnosis");
     }
-  }, [router, analysisData, imageUrl]);
+  }, [router, analysisData, imageUrl, result]); // 加入 result 作為判斷基準
 
   // --- 渲染前的防禦檢查 ---
   if (!result || !analysisData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
-          <p className="text-text-secondary">{isZh ? "載入中..." : "Loading..."}</p>
+          <p className="text-text-secondary">
+            {isZh ? "載入中..." : "Loading..."}
+          </p>
         </div>
       </div>
     );
@@ -86,14 +99,16 @@ export default function ResultPage() {
   // --- 資料顯示映射 ---
   const displayName = isZh ? analysisData.name.zh : analysisData.name.en;
   const displayQuote = isZh ? analysisData.quote.zh : analysisData.quote.en;
-  const displayDesc = isZh ? analysisData.description.zh : analysisData.description.en;
+  const displayDesc = isZh
+    ? analysisData.description.zh
+    : analysisData.description.en;
   const displayAdvice = isZh ? analysisData.advice.zh : analysisData.advice.en;
-  
-  const displayTongueBody = isZh 
-    ? analysisData.tongue_body_desc?.zh 
+
+  const displayTongueBody = isZh
+    ? analysisData.tongue_body_desc?.zh
     : analysisData.tongue_body_desc?.en;
-  const displayTongueCoating = isZh 
-    ? analysisData.tongue_coating_desc?.zh 
+  const displayTongueCoating = isZh
+    ? analysisData.tongue_coating_desc?.zh
     : analysisData.tongue_coating_desc?.en;
 
   const displayFoods = analysisData.foods.map((food) => ({
@@ -105,6 +120,7 @@ export default function ResultPage() {
   // --- 處理函式 ---
   const handleReturn = () => {
     isLoggedIn ? router.push("/home") : router.push("/");
+    sessionStorage.removeItem("is_guest");
   };
 
   const handleSave = async () => {
@@ -122,6 +138,9 @@ export default function ResultPage() {
           }),
         });
 
+        console.log("Trends ID:", analysisData.id);
+        console.log("Generated URL:", imageUrl);
+
         if (!response.ok) throw new Error("Cloud save failed");
 
         sendGAEvent("event", "photo_upload_success", { method: "database" });
@@ -129,14 +148,23 @@ export default function ResultPage() {
         router.push("/trends");
       } else {
         // 訪客逻辑：存入 localStorage 並引導登入
-        localStorage.setItem("pending_save_result", JSON.stringify({ ...result, timestamp: Date.now() }));
-        if (confirm(isZh ? "儲存記錄需要登入，是否要登入？" : "Please sign in to save your records.")) {
+        localStorage.setItem(
+          "pending_save_result",
+          JSON.stringify({ ...result, timestamp: Date.now() }),
+        );
+        if (
+          confirm(
+            isZh
+              ? "儲存記錄需要登入，是否要登入？"
+              : "Please sign in to save your records.",
+          )
+        ) {
           router.push("/auth/choose");
         }
       }
     } catch (error) {
-      sendGAEvent("event", "photo_upload_fail", { 
-        error: error instanceof Error ? error.message : "Unknown" 
+      sendGAEvent("event", "photo_upload_fail", {
+        error: error instanceof Error ? error.message : "Unknown",
       });
       alert("Error saving data");
     } finally {
@@ -147,7 +175,10 @@ export default function ResultPage() {
   return (
     <div className="min-h-screen bg-surface">
       <header className="w-full p-4 flex items-center justify-between">
-        <button onClick={handleReturn} className="p-2 hover:bg-brand/10 rounded-lg transition-colors text-brand-muted">
+        <button
+          onClick={handleReturn}
+          className="p-2 hover:bg-brand/10 rounded-lg transition-colors text-brand-muted"
+        >
           <ArrowLeft size={24} />
         </button>
         {isGuest && <LanguageSwitcher />}
@@ -164,7 +195,11 @@ export default function ResultPage() {
                 {isZh ? "您的舌頭照片" : "Your Tongue Photo"}
               </p>
               <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-brand/20 overflow-hidden shadow-inner bg-gray-50">
-                <img src={result.imageFile} alt="User tongue" className="w-full h-full object-cover scale-150" />
+                <img
+                  src={result.imageFile}
+                  alt="User tongue"
+                  className="w-full h-full object-cover scale-150"
+                />
               </div>
             </div>
 
@@ -174,9 +209,12 @@ export default function ResultPage() {
                 {isZh ? "參考舌像" : "Reference Tongue"}
               </p>
               <div className="w-full aspect-square max-w-[280px] rounded-xl border-2 border-dashed border-gray-300 overflow-hidden bg-gray-50 shadow-sm">
-                <img 
-                  src={getTongueImage(analysisData.id as any, analysisData.name)} 
-                  alt={displayName} 
+                <img
+                  src={getTongueImage(
+                    analysisData.id as any,
+                    analysisData.name,
+                  )}
+                  alt={displayName}
                   className="w-full h-full object-contain p-2"
                 />
               </div>
@@ -196,43 +234,63 @@ export default function ResultPage() {
           </div>
 
           <div className="pt-4">
-            <h2 className="text-xl font-semibold mb-2">{isZh ? "健康建議" : "Health Advice"}</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              {isZh ? "健康建議" : "Health Advice"}
+            </h2>
             <p className="text-gray-700">{displayAdvice}</p>
           </div>
 
-          {isLoggedIn && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-              <div>
-                <h3 className="font-semibold text-brand">{isZh ? "舌體分析" : "Body Analysis"}</h3>
-                <p className="text-sm text-gray-600">{displayTongueBody || "N/A"}</p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-brand">{isZh ? "舌苔分析" : "Coating Analysis"}</h3>
-                <p className="text-sm text-gray-600">{displayTongueCoating || "N/A"}</p>
-              </div>
+          {/* {isLoggedIn && ( */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            <div>
+              <h3 className="font-semibold text-brand">
+                {isZh ? "舌體分析" : "Body Analysis"}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {displayTongueBody || "N/A"}
+              </p>
             </div>
-          )}
+            <div>
+              <h3 className="font-semibold text-brand">
+                {isZh ? "舌苔分析" : "Coating Analysis"}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {displayTongueCoating || "N/A"}
+              </p>
+            </div>
+          </div>
+          {/* )} */}
         </div>
 
         {/* 食物推薦 */}
         {displayFoods.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-4">{isZh ? "推薦食物" : "Recommended Foods"}</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              {isZh ? "推薦食物" : "Recommended Foods"}
+            </h2>
             <div className="space-y-4">
               {displayFoods.map((food, index) => {
-                const foodImage = getFoodImage(food.name) || getFoodImage(food.originalName);
+                const foodImage =
+                  getFoodImage(food.name) || getFoodImage(food.originalName);
                 return (
-                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow flex items-center space-x-4">
+                  <div
+                    key={index}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow flex items-center space-x-4"
+                  >
                     <div className="w-20 h-20 flex-shrink-0">
-                      <img 
-                        src={foodImage || "/assets/images/Foods/1. Lotus.png"} 
-                        alt={food.name} 
+                      <img
+                        src={foodImage || "/assets/images/Foods/1. Lotus.png"}
+                        alt={food.name}
                         className="w-full h-full object-cover rounded-lg"
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-primary-dark">{food.name}</h3>
-                      <p className="text-sm text-text-secondary">{food.benefit}</p>
+                      <h3 className="font-semibold text-lg text-primary-dark">
+                        {food.name}
+                      </h3>
+                      <p className="text-sm text-text-secondary">
+                        {food.benefit}
+                      </p>
                     </div>
                   </div>
                 );
@@ -242,15 +300,24 @@ export default function ResultPage() {
         )}
 
         {/* 操作按鈕 */}
+
         <div className="flex flex-col sm:flex-row gap-4">
-          {analysisData.id !== "no_tongue" && (
+          {analysisData.id !== "no_tongue" && isLoggedIn && (
             <button
               onClick={handleSave}
               disabled={saving}
               className="flex-1 py-3 px-6 bg-brand text-white rounded-full font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               <Save size={20} />
-              <span>{saving ? (isZh ? "儲存中..." : "Saving...") : (isZh ? "儲存記錄" : "Save Record")}</span>
+              <span>
+                {saving
+                  ? isZh
+                    ? "儲存中..."
+                    : "Saving..."
+                  : isZh
+                    ? "儲存記錄"
+                    : "Save Record"}
+              </span>
             </button>
           )}
 

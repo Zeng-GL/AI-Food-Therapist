@@ -76,11 +76,11 @@ export default function CameraCapture({
       setIsStreaming(true);
     } catch (err) {
       console.error("Camera error:", err);
-      setError(
-        isZh
-          ? "無法存取相機，請檢查權限設定"
-          : "Cannot access camera, please check permissions",
-      );
+      // setError(
+      //   isZh
+      //     ? "無法存取相機，請檢查權限設定"
+      //     : "Cannot access camera, please check permissions",
+      // );
     }
   }, [isZh]);
 

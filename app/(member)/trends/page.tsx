@@ -35,33 +35,52 @@ export default function TrendsPage() {
   const pickLang = (field: any) => isZh ? (field?.zh ?? "") : (field?.en ?? "");
 
   const fetchHistory = async () => {
-    try {
-      const response = await fetch("/api/history", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      const data = await response.json();
+  try {
+    const response = await fetch("/api/history", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await response.json();
 
-      if (data.items) {
-        const mapped = data.items.map((item: any) => ({
-          id: item.historyId,
-          // image_url: item.imageUrl || getTongueImage(item.result.id, getTongueData(item.result.id).name),
-          image_url: getTongueImage(item.result.id, getTongueData(item.result.id).name),
-          result_code: item.result.id,
-          result_name: pickLang(item.result.name),
-          result_desc: pickLang(item.result.desc),
-          result_advice: pickLang(item.result.advice),
-          created_at: item.createdAt,
-        }));
-        setHistory(mapped);
-      }
-    } catch (error) {
-      console.error("Error fetching history:", error);
-    } finally {
-      setLoading(false);
+    if (data.items) {
+      const mapped = data.items
+        .map((item: any) => {
+          try {
+            // 1. 安全提取 result 資料
+            const resultData = item.result || {};
+            const tongueId = resultData.id;
+
+            // 2. 防禦性獲取靜態資料，若找不到該 ID，提供預設值防止 .name 崩潰
+            const staticData = getTongueData(tongueId) || { 
+              name: { zh: "檢測紀錄", en: "Diagnosis" },
+              description: { zh: "", en: "" } 
+            };
+
+            return {
+              id: item.historyId,
+              image_url: getTongueImage(tongueId, staticData.name), //item.imageUrl || getTongueImage(tongueId, staticData.name),
+              result_code: tongueId,
+              result_name: pickLang(resultData.name || staticData.name),
+              result_desc: pickLang(resultData.description || resultData.desc),
+              result_advice: pickLang(resultData.advice),
+              created_at: item.createdAt,
+            };
+          } catch (mapError) {
+            console.error("單筆資料解析失敗:", item, mapError);
+            return null; // 解析失敗的資料標記為 null
+          }
+        })
+        .filter((item: DisplayItem): item is DisplayItem => item !== null); // 過濾掉壞掉的資料
+
+      setHistory(mapped);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching history:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     if (status === "authenticated") {

@@ -2,12 +2,11 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import tongue_ref_data from "./recommend_rule.json";
 
-// 初始化 OpenRouter (兼容 OpenAI SDK)
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY!,
   defaultHeaders: {
-    "HTTP-Referer": "https://ai-food-therapist.vercel.app", // 建議替換為你的網站網址
+    "HTTP-Referer": "https://ai-food-therapist.vercel.app",
     "X-Title": "TCM Tongue Analysis",
   },
 });
@@ -26,38 +25,38 @@ export async function POST(req: Request) {
 
     const isZh = language === "zh" || language.startsWith("zh-");
 
-    // 1. 準備精簡版知識庫 (只提供 ID 和判斷描述，減少 AI 負擔)
-    const simplifiedKB = tongue_ref_data.data.map((item) => ({
+    // 1. 準備精簡版知識庫
+    const simplifiedKB = tongue_ref_data.data.map((item: any) => ({
       id: item.id,
-      description: item.description,
+      description: item.description?.zh || item.description, 
     }));
 
-    // 2. 構建 System Instruction
+    // 2. 構建 System Instruction (要求同時回傳中英文，對齊 A 版本 schema)
     const systemInstruction = `You are a professional TCM tongue diagnosis expert.
-Analyze the user's tongue photo and provide detailed analysis for 'tongue_body_desc' and 'tongue_coating_desc' (around 200 words each).
-Then, classify the tongue strictly based on the ID from the provided Knowledge Base.
+You are a professional TCM tongue diagnosis expert. Please provide your analysis of the tongue body and tongue coating. Analyze the provided tongue photo and classify it strictly based on the knowledge base. Output only the single best match from the knowledge base.
+Analyze the user's tongue photo and provide detailed analysis in JSON format.
 
 【Rules】:
-1. Return result in JSON format.
-2. Select only the SINGLE best matching 'id'. If no tongue is found, use id "No Tongue".
-3. Tongue body analysis: Focus on color, shape, moisture.
-4. Tongue coating analysis: Focus on thickness, color, distribution.
-5. All descriptions must be in ${isZh ? "Traditional Chinese" : "English"}.
+1. Classification must strictly follow the IDs in Knowledge Base. If no tongue is detected, use "no_tongue" class.
+2. You MUST provide both Chinese and English for analysis fields.
+3. Output Format:
+{
+  "id": "string",
+  "tongue_body_desc": { "zh": "...", "en": "..." },
+  "tongue_coating_desc": { "zh": "...", "en": "..." }
+}
 
-【Knowledge Base (ID & Criteria)】:
+【Knowledge Base】:
 ${JSON.stringify(simplifiedKB)}`;
 
-    const promptText = isZh ? "請詳細分析這張舌頭照片。" : "Please provide a detailed analysis of this tongue photo.";
+    const promptText = "Analyze this tongue photo and match an ID from the knowledge base.";
 
-    // 3. 定義模型順序：主要用 Gemini，輔助用 OpenAI
     const models = ["google/gemini-2.5-flash", "openai/gpt-4o-mini"];
     let aiResponse = null;
     let usedModel = "";
 
-    // 4. 手動備援輪詢
     for (const modelName of models) {
       try {
-        console.log(`正在嘗試呼叫模型: ${modelName}`);
         const completion = await openai.chat.completions.create({
           model: modelName,
           messages: [
@@ -71,47 +70,60 @@ ${JSON.stringify(simplifiedKB)}`;
             },
           ],
           response_format: { type: "json_object" },
+          max_tokens: 1500,
         });
 
         const content = completion.choices[0].message.content;
         if (content) {
           aiResponse = JSON.parse(content);
           usedModel = modelName;
-          break; // 成功取得結果，跳出迴圈
+          break;
         }
       } catch (err) {
-        console.error(`${modelName} 調用失敗:`, err);
-        continue; // 嘗試下一個模型
+        console.error(`${modelName} failed:`, err);
+        continue;
       }
     }
 
     if (!aiResponse || !aiResponse.id) {
-      throw new Error("All AI models failed to provide a valid response.");
+      throw new Error("All AI models failed.");
     }
 
-    // 5. 後端查表：從原始 JSON 中撈出完整資訊 (食物、建議、引用)
-    const baseRecord = tongue_ref_data.data.find((item: typeof tongue_ref_data.data[0]) => item.id === aiResponse.id);
+    // 3. 後端查表並完整對齊 A 版本的格式
+    const baseRecord = tongue_ref_data.data.find((item: any) => item.id === aiResponse.id);
     
     if (!baseRecord) {
-        // 如果 AI 回傳了不存在的 ID (雖然機率低)，提供一個基礎回饋
-        return NextResponse.json({ success: true, result: aiResponse, model: usedModel });
+      throw new Error(`Invalid ID: ${aiResponse.id}`);
     }
 
-    // 6. 組合最終結果：保留 JSON 的結構，但使用 AI 生成的詳細描述
+    // 輔助函式：確保對象具有 zh/en 結構
+    const formatLang = (field: any) => ({
+      zh: field?.zh || field || "",
+      en: field?.en || field || ""
+    });
+
+    // 4. 組合成與 A 版本完全一致的結構
     const finalResult = {
-      ...baseRecord,
-      tongue_body_desc: {
-        [isZh ? "zh" : "en"]: aiResponse.tongue_body_desc,
-      },
-      tongue_coating_desc: {
-        [isZh ? "zh" : "en"]: aiResponse.tongue_coating_desc,
-      },
+      id: baseRecord.id,
+      name: formatLang(baseRecord.name),
+      // A 版本使用的是 "desc" 欄位而非 "description"
+      description: formatLang(baseRecord.description), 
+      quote: formatLang(baseRecord.quote),
+      advice: formatLang(baseRecord.advice),
+      tongue_body_desc: formatLang(aiResponse.tongue_body_desc),
+      tongue_coating_desc: formatLang(aiResponse.tongue_coating_desc),
+      foods: (baseRecord.foods || []).map((f: any) => ({
+        ...f,
+        name: formatLang(f.name),
+        benefitText: formatLang(f.benefitText)
+      }))
     };
 
+    // 5. 回傳 Response (注意：result 必須是 Object，不可 stringify)
     return NextResponse.json({
       success: true,
       result: finalResult,
-      model: usedModel, // 回傳使用的模型以便追蹤
+      rawText: JSON.stringify(aiResponse) // 模擬 A 版本的 rawText 供除錯
     });
 
   } catch (error: any) {

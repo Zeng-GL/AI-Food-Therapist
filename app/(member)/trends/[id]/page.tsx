@@ -13,7 +13,7 @@ interface DetailedRecord {
   resultCode: TongueType;
   name: { zh: string; en: string };
   quote: { zh: string; en: string };
-  desc: { zh: string; en: string };
+  description: { zh: string; en: string };
   advice: { zh: string; en: string };
   tongue_coating_desc: { zh: string; en: string };
   tongue_body_desc: { zh: string; en: string };
@@ -61,7 +61,7 @@ export default function TrendsDetailPage() {
         resultCode: found.result.id,
         name: found.result.name,
         quote: found.result.quote,
-        desc: found.result.desc,
+        description: found.result.description,
         advice: found.result.advice,
         tongue_body_desc: found.result.tongue_body_desc,
         tongue_coating_desc: found.result.tongue_coating_desc,
@@ -107,7 +107,7 @@ export default function TrendsDetailPage() {
   const tongueData = getTongueData(record.resultCode);
   const displayName = isZh ? record.name.zh : record.name.en;
   const displayQuote = isZh ? record.quote.zh : record.quote.en;
-  const displayDesc = isZh ? record.desc.zh : record.desc.en;
+  const displayDesc = isZh ? record.description.zh : record.description.en;
   const displayAdvice = isZh ? record.advice.zh : record.advice.en;
   const displayTongueBodyDesc = isZh
     ? record.tongue_body_desc.zh
@@ -131,35 +131,6 @@ export default function TrendsDetailPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        {/* 圖片對比區
-        <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-center text-xs font-medium text-gray-500">
-                {isZh ? "您的舌照" : "Your Photo"}
-              </p>
-              <div className="w-full max-w-xs mx-auto aspect-square rounded-lg border-2 border-gray-200 overflow-hidden">
-                <img
-                  src={record.imageUrl}
-                  alt="User tongue"
-                  className="w-full h-full object-cover object-center scale-150 transition-transform duration-300"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-center text-xs font-medium text-gray-500">
-                {isZh ? "參考舌像" : "Reference"}
-              </p>
-              <div className="aspect-square rounded-xl overflow-hidden border bg-gray-50">
-                <img
-                  src={getTongueImage(record.resultCode, tongueData.name)}
-                  alt="Reference tongue"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
         {/* Image Preview - User's Photo and Reference Tongue Image */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           {/* 使用 flex 並在 md 以上橫向排列，gap 保持一致 */}

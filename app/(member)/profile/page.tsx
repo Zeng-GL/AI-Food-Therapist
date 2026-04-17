@@ -70,31 +70,10 @@ export default function ProfilePage() {
     ) {
       try {
         await signOut({ callbackUrl: "/", redirect: true });
+        sessionStorage.clear();
       } catch (error) {
         console.error("Logout Error:", error);
       }
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    // if (!confirm("確定要刪除這筆紀錄嗎？")) return;
-    if (
-      confirm(isZh ? "確定要刪除帳號嗎？此操作會一併刪除您的健康紀錄，且無法回復，請再三確認再執行此動作" : "Are you sure you want to log out?")
-    ) {
-      try {
-        // 呼叫帳號軟刪除 API
-        const res = await fetch("/api/user/profile", { method: "DELETE" });
-
-        if (res.ok) {
-          alert(isZh ? "帳號及健康紀錄已成功刪除":"Sucessfully delete your account and health record");
-          // 必須在 API 完成後才執行 signOut
-          await signOut({ callbackUrl: "/" });
-        }
-      } catch (error) {
-        console.error("註銷失敗", error);
-      }
-    } else {
-      return;
     }
   };
 
