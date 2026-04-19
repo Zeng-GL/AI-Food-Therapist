@@ -267,33 +267,205 @@
           "allergens": [],
           "contraindications": [],
           "healthBenefits": ["digestion"]
-        },
-        {
-          "id": "no_tongue",
-          "slug": "no_tongue",
-          "name": {
-            "en": "No Tongue Detected",
-            "zh": "未偵測到舌頭"
-          },
-          "description": {
-            "en": "The system could not detect a tongue in the image.",
-            "zh": "系統在影像中未偵測到舌頭。"
-          },
-          "quote": {
-            "en": "Please make sure your tongue is clearly visible in the photo.",
-            "zh": "請確保舌頭在照片中清楚可見。"
-          },
-          "advice": {
-            "en": "Try taking the photo again in good lighting, stick out your tongue naturally, and keep the camera steady.",
-            "zh": "請在光線充足的環境下重新拍攝，自然伸出舌頭並保持相機穩定。"
-          },
-          "foods": [
-            {}
-          ],
-          "createdAt": "2026-03-15T00:00:00.000Z",
-          "updatedAt": "2026-03-15T00:00:00.000Z"
         }
       ]
+    },
+    {
+      "id": "peeled",
+      "slug": "peeled-no-coating",
+      "name": {
+        "en": "Peeled / No Coating",
+        "zh": "舌苔剝落 / 無苔"
+      },
+      "description": {
+        "en": "Stomach yin deficiency, qi deficiency, general weakness",
+        "zh": "胃陰虛、氣虛、身體較虛弱"
+      },
+      "quote": {
+        "en": "Running low? Time to recharge with rest and nutrients 💧",
+        "zh": "最近有點累過頭，記得放慢腳步，補充營養💧"
+      },
+      "advice": {
+        "en": "A peeled tongue coating is often related to stomach yin deficiency. Gentle, yin-nourishing foods are ideal.",
+        "zh": "舌苔剝落多與胃陰不足有關，適合滋陰養胃、溫和補養的食物"
+      },
+      "foods": [
+        {
+          "id": "snow-pear",
+          "name": { "en": "Snow pear", "zh": "雪梨" },
+          "benefitText": {
+            "en": "Generates body fluids and moistens dryness to relieve thirst",
+            "zh": "生津潤燥，潤肺止咳，是補足身體水分的佳品"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["skin_health", "general_wellness"]
+        },
+        {
+          "id": "fresh-lily-bulbs",
+          "name": { "en": "Fresh lily bulbs", "zh": "鮮百合" },
+          "benefitText": {
+            "en": "Nourishes Yin and moistens the lungs for deeper hydration",
+            "zh": "養陰潤肺，口感更潤，能清心除煩並滋潤呼吸道"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["sleep_quality", "general_wellness"]
+        },
+        {
+          "id": "millet-porridge",
+          "name": { "en": "Millet porridge", "zh": "小米粥" },
+          "benefitText": {
+            "en": "Strengthens the spleen and nourishes the stomach for easy digestion",
+            "zh": "健脾養胃，極易消化，是病後或脾胃虛弱者的補品"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": ["Gluten"],
+          "contraindications": [],
+          "healthBenefits": ["digestion", "sleep_quality"]
+        }
+      ]
+    },
+    {
+      "id": "teeth_marks",
+      "slug": "scalloped-tongue",
+      "name": {
+        "en": "Teeth Marks (Scalloped)",
+        "zh": "舌有齒痕"
+      },
+      "description": {
+        "en": "Spleen deficiency, edema, internal dampness",
+        "zh": "脾虛、水腫、體內濕氣"
+      },
+      "quote": {
+        "en": "Stress shows — sleep early and cut the salt 🌙",
+        "zh": "壓力太大會水腫喔，早睡和少鹽可以幫你消腫🌙"
+      },
+      "advice": {
+        "en": "Teeth marks on the tongue are often related to spleen deficiency and excess dampness. Foods that strengthen the spleen and drain dampness are beneficial.",
+        "zh": "有齒痕多與脾虛、體內濕氣重有關，適合健脾利濕的食物。"
+      },
+      "foods": [
+        {
+          "id": "jobs-tears",
+          "name": { "en": "Job's tears", "zh": "薏仁" },
+          "benefitText": {
+            "en": "Drains dampness and promotes urination to reduce swelling",
+            "zh": "利水滲濕，有助於排除體內多餘水分，消除浮腫"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": ["Gluten"],
+          "contraindications": [],
+          "healthBenefits": ["digestion", "general_wellness"]
+        },
+        {
+          "id": "red-beans",
+          "name": { "en": "Red beans", "zh": "紅豆" },
+          "benefitText": {
+            "en": "Strengthens the spleen and removes dampness from the body",
+            "zh": "健脾祛濕，側重於補血與代謝下肢水腫"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["digestion", "general_wellness"]
+        },
+        {
+          "id": "fresh-ginger",
+          "name": { "en": "Fresh ginger", "zh": "生薑" },
+          "benefitText": {
+            "en": "Warms the middle burner and expels dampness and cold",
+            "zh": "溫中祛濕，透過溫熱性質發汗散寒，驅除體內寒濕"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["digestion", "fatigue_relief"]
+        }
+      ]
+    },
+    {
+      "id": "cracked",
+      "slug": "cracked-tongue",
+      "name": {
+        "en": "Cracked Tongue",
+        "zh": "舌有裂紋"
+      },
+      "description": {
+        "en": "Fluid deficiency, stress-related heat or internal heat",
+        "zh": "體液不足、壓力大或內熱"
+      },
+      "quote": {
+        "en": "Your tongue tells what your heart hides — be kind to yourself 💬",
+        "zh": "你內心的疲憊悄悄顯現在舌頭上，該好好愛自己了💬"
+      },
+      "advice": {
+        "en": "A cracked tongue is often associated with yin deficiency or lack of body fluids. Choose yin-nourishing and fluid-generating foods.",
+        "zh": "舌有裂紋多與陰虛或體液不足有關，適合滋陰養津的食物"
+      },
+      "foods": [
+        {
+          "id": "black-sesame",
+          "name": { "en": "Black sesame", "zh": "黑芝麻" },
+          "benefitText": {
+            "en": "Nourishes Yin and moistens dryness for skin and hair health",
+            "zh": "滋陰潤燥，能潤腸通便並滋養頭髮與肌膚"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": ["Nuts"],
+          "contraindications": [],
+          "healthBenefits": ["skin_health", "general_wellness"]
+        },
+        {
+          "id": "white-fungus",
+          "name": { "en": "White fungus", "zh": "銀耳" },
+          "benefitText": {
+            "en": "Nourishes Yin and generates fluids to replenish collagen-like moisture",
+            "zh": "養陰生津，含有豐富膠質，能滋潤全身乾燥組織"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["skin_health", "sleep_quality"]
+        },
+        {
+          "id": "sugarcane-juice",
+          "name": { "en": "Sugarcane juice", "zh": "甘蔗汁" },
+          "benefitText": {
+            "en": "Clears heat and generates fluids to rapidly hydrate the body",
+            "zh": "清熱生津，能快速補給水分並緩解口乾舌燥"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": ["Diabetes"],
+          "healthBenefits": ["general_wellness"]
+        }
+      ]
+    },
+    {
+      "id": "no_tongue",
+      "slug": "no_tongue",
+      "name": {
+        "en": "No Tongue Detected",
+        "zh": "未偵測到舌頭"
+      },
+      "description": {
+        "en": "The system could not detect a tongue in the image.",
+        "zh": "系統在影像中未偵測到舌頭。"
+      },
+      "quote": {
+        "en": "Please make sure your tongue is clearly visible in the photo.",
+        "zh": "請確保舌頭在照片中清楚可見。"
+      },
+      "advice": {
+        "en": "Try taking the photo again in good lighting, stick out your tongue naturally, and keep the camera steady.",
+        "zh": "請在光線充足的環境下重新拍攝，自然伸出舌頭並保持相機穩定。"
+      },
+      "foods": [{}],
+      "createdAt": "2026-03-15T00:00:00.000Z",
+      "updatedAt": "2026-03-15T00:00:00.000Z"
     }
   ]
 }

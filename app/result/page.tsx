@@ -138,9 +138,6 @@ export default function ResultPage() {
           }),
         });
 
-        console.log("Trends ID:", analysisData.id);
-        console.log("Generated URL:", imageUrl);
-
         if (!response.ok) throw new Error("Cloud save failed");
 
         sendGAEvent("event", "photo_upload_success", { method: "database" });
@@ -263,7 +260,7 @@ export default function ResultPage() {
         </div>
 
         {/* 食物推薦 */}
-        {displayFoods.length > 0 && (
+        {displayFoods.length > 0 && analysisData.id !== "no_tongue" && (
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold mb-4">
               {isZh ? "推薦食物" : "Recommended Foods"}
@@ -302,7 +299,7 @@ export default function ResultPage() {
         {/* 操作按鈕 */}
 
         <div className="flex flex-col sm:flex-row gap-4">
-          {analysisData.id !== "no_tongue" && isLoggedIn && (
+          {analysisData.id !== "no_tongue" && (
             <button
               onClick={handleSave}
               disabled={saving}

@@ -28,25 +28,25 @@ export default function ChooseAuthTypePage() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    // If not logged in after a delay, redirect to home
-    // Give time for auth state to sync
-    if (mounted) {
-      const timer = setTimeout(() => {
-        if (!isLoggedIn) {
-          console.log('⚠️ Not logged in after timeout, redirecting to home');
-          router.push('/');
-        }
-      }, 500);
+  // useEffect(() => {
+  //   // If not logged in after a delay, redirect to home
+  //   // Give time for auth state to sync
+  //   if (mounted) {
+  //     const timer = setTimeout(() => {
+  //       if (!isLoggedIn) {
+  //         console.log('⚠️ Not logged in after timeout, redirecting to home');
+  //         router.push('/');
+  //       }
+  //     }, 500);
       
-      return () => clearTimeout(timer);
-    }
-  }, [mounted, isLoggedIn, router]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [mounted, isLoggedIn, router]);
 
   // 檢查並自動儲存待處理的結果
   useEffect(() => {
     const savePendingResult = async () => {
-      if (!user) return;
+      // if (!user) return;
 
       const pendingResultStr = localStorage.getItem('pending_save_result');
       if (!pendingResultStr) return;
@@ -62,18 +62,18 @@ export default function ChooseAuthTypePage() {
         }
 
         // Mock 模式下：清除待處理結果
-        const useMockMode = process.env.NEXT_PUBLIC_USE_MOCK_MODE === 'true';
-        if (useMockMode) {
-          console.log('⚠️ Mock mode: Clearing pending result');
-          localStorage.removeItem('pending_save_result');
-          return;
-        }
+        // const useMockMode = process.env.NEXT_PUBLIC_USE_MOCK_MODE === 'true';
+        // if (useMockMode) {
+        //   console.log('⚠️ Mock mode: Clearing pending result');
+        //   localStorage.removeItem('pending_save_result');
+        //   return;
+        // }
 
         setSavingPending(true);
 
         // 上傳圖片到 Supabase Storage
         const imageBlob = await (await fetch(pendingResult.imageFile)).blob();
-        const fileName = `${user.id}/${Date.now()}.jpg`;
+        const fileName = `${Date.now()}.jpg`;
         const { error: uploadError } = await supabase.storage
           .from('tongue-images')
           .upload(fileName, imageBlob, {
@@ -91,7 +91,7 @@ export default function ChooseAuthTypePage() {
         const { error: dbError } = await supabase
           .from('history')
           .insert({
-            user_id: user.id,
+            user_id: user?.id,
             image_url: urlData.publicUrl,
             result_code: pendingResult.result_code,
           });

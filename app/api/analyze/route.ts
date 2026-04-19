@@ -28,8 +28,9 @@ export async function POST(req: Request) {
     // 1. 準備精簡版知識庫
     const simplifiedKB = tongue_ref_data.data.map((item: any) => ({
       id: item.id,
-      description: item.description?.zh || item.description, 
+      description: item.description, //item.description?.zh ||
     }));
+
 
     // 2. 構建 System Instruction (要求同時回傳中英文，對齊 A 版本 schema)
     const systemInstruction = `You are a professional TCM tongue diagnosis expert.
@@ -45,6 +46,7 @@ Analyze the user's tongue photo and provide detailed analysis in JSON format.
   "tongue_body_desc": { "zh": "...", "en": "..." },
   "tongue_coating_desc": { "zh": "...", "en": "..." }
 }
+4.  Output id must be one of the ids present in the knowledge base. If the photo does not contain a tongue, return "no_tongue" as the id and provide appropriate descriptions.
 
 【Knowledge Base】:
 ${JSON.stringify(simplifiedKB)}`;
@@ -77,6 +79,8 @@ ${JSON.stringify(simplifiedKB)}`;
         if (content) {
           aiResponse = JSON.parse(content);
           usedModel = modelName;
+          console.log(`Model ${usedModel} succeeded.`);
+          console.log(aiResponse);
           break;
         }
       } catch (err) {

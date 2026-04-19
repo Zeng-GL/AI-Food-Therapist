@@ -17,7 +17,7 @@ export interface FoodItem {
 export interface TongueData {
   id: TongueType;
   name: { en: string; zh: string };
-  desc: { en: string; zh: string };
+  description: { en: string; zh: string };
   quote: { en: string; zh: string };
   advice: { en: string; zh: string };
   foods: FoodItem[];
@@ -27,7 +27,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   red: {
     id: 'red',
     name: { en: 'Red Tongue', zh: '舌紅' },
-    desc: { en: 'Excess internal heat, prone to heatiness', zh: '火氣大、內熱傾向' },
+    description: { en: 'Excess internal heat, prone to heatiness', zh: '火氣大、內熱傾向' },
     quote: { en: 'Feeling the heat? Don\'t let little things ruin your mood 🔥', zh: '最近火氣有點旺，別讓小事燒掉你的好心情🔥' },
     advice: { en: 'A red tongue often indicates excess heat in the body. Cooling and yin-nourishing foods help restore balance.', zh: '舌紅多與體內熱盛有關，適合選擇清涼、養陰的食物，幫助降火平衡。' },
     foods: [
@@ -63,7 +63,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   pale: {
     id: 'pale',
     name: { en: 'Pale Tongue', zh: '舌淡白' },
-    desc: { en: 'Cold-deficiency constitution, weaker circulation', zh: '虛寒體質、循環較弱' },
+    description: { en: 'Cold-deficiency constitution, weaker circulation', zh: '虛寒體質、循環較弱' },
     quote: { en: 'Your energy seems low — warm foods and rest will help 🛌', zh: '看起來有點虛，不妨多補充溫暖食物與休息🛌' },
     advice: { en: 'A pale tongue is often linked to qi and blood deficiency. Warm, spleen-strengthening foods can improve vitality and circulation.', zh: '舌淡白常與氣血不足有關，適合溫補、健脾的食物，幫助提升體力與循環。' },
     foods: [
@@ -99,7 +99,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   white_thick: {
     id: 'white_thick',
     name: { en: 'Thick White Coating', zh: '舌苔白厚' },
-    desc: { en: 'Dampness accumulation, poor digestion', zh: '濕氣重、消化不良' },
+    description: { en: 'Dampness accumulation, poor digestion', zh: '濕氣重、消化不良' },
     quote: { en: 'Feeling heavy? Try herbal tea to clear the damp ☁️', zh: '濕氣卡住了你？試試去濕茶，讓身體清爽點☁️' },
     advice: { en: 'A thick white coating often indicates dampness in the spleen and stomach. Foods that drain dampness and promote digestion are recommended.', zh: '舌苔白厚多與脾胃濕重有關，適合健脾化濕、利水的食物。' },
     foods: [
@@ -135,7 +135,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   yellow_thick: {
     id: 'yellow_thick',
     name: { en: 'Thick Yellow Coating', zh: '舌苔黃厚' },
-    desc: { en: 'Internal damp-heat, heat syndrome', zh: '濕熱內蘊、上火' },
+    description: { en: 'Internal damp-heat, heat syndrome', zh: '濕熱內蘊、上火' },
     quote: { en: 'Watch out for heatiness! Cool down with light meals 🍵', zh: '小心上火！多吃清熱食物，給自己降溫🍵' },
     advice: { en: 'A thick yellow coating is often linked to internal damp-heat and poor digestion. Choose foods that clear heat, remove dampness, and aid digestion.', zh: '舌苔黃厚多與體內濕熱、消化不良有關，適合清熱、去濕、助消化的食物。' },
     foods: [
@@ -171,7 +171,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   peeled: {
     id: 'peeled',
     name: { en: 'Peeled / No Coating', zh: '舌苔剝落 / 無苔' },
-    desc: { en: 'Stomach yin deficiency, qi deficiency, general weakness', zh: '胃陰虛、氣虛、身體較虛弱' },
+    description: { en: 'Stomach yin deficiency, qi deficiency, general weakness', zh: '胃陰虛、氣虛、身體較虛弱' },
     quote: { en: 'Running low? Time to recharge with rest and nutrients 💧', zh: '最近有點累過頭，記得放慢腳步，補充營養💧' },
     advice: { en: 'A peeled tongue coating is often related to stomach yin deficiency. Gentle, yin-nourishing foods are ideal.', zh: '舌苔剝落多與胃陰不足有關，適合滋陰養胃、溫和補養的食物' },
     foods: [
@@ -207,7 +207,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   teeth_marks: {
     id: 'teeth_marks',
     name: { en: 'Teeth Marks (Scalloped)', zh: '舌有齒痕' },
-    desc: { en: 'Spleen deficiency, edema, internal dampness', zh: '脾虛、水腫、體內濕氣' },
+    description: { en: 'Spleen deficiency, edema, internal dampness', zh: '脾虛、水腫、體內濕氣' },
     quote: { en: 'Stress shows — sleep early and cut the salt 🌙', zh: '壓力太大會水腫喔，早睡和少鹽可以幫你消腫🌙' },
     advice: { en: 'Teeth marks on the tongue are often related to spleen deficiency and excess dampness. Foods that strengthen the spleen and drain dampness are beneficial.', zh: '有齒痕多與脾虛、體內濕氣重有關，適合健脾利濕的食物。' },
     foods: [
@@ -243,7 +243,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   cracked: {
     id: 'cracked',
     name: { en: 'Cracked Tongue', zh: '舌有裂紋' },
-    desc: { en: 'Fluid deficiency, stress-related heat or internal heat', zh: '體液不足、壓力大或內熱' },
+    description: { en: 'Fluid deficiency, stress-related heat or internal heat', zh: '體液不足、壓力大或內熱' },
     quote: { en: 'Your tongue tells what your heart hides — be kind to yourself 💬', zh: '你內心的疲憊悄悄顯現在舌頭上，該好好愛自己了💬' },
     advice: { en: 'A cracked tongue is often associated with yin deficiency or lack of body fluids. Choose yin-nourishing and fluid-generating foods.', zh: '舌有裂紋多與陰虛或體液不足有關，適合滋陰養津的食物' },
     foods: [
@@ -279,7 +279,7 @@ export const TONGUE_DATA: Record<TongueType, TongueData> = {
   no_tongue: {
     id: 'no_tongue',
     name: { en: 'No Tongue Detected', zh: '未偵測到舌頭' },
-    desc: { en: 'The system could not detect a tongue in the image.', zh: '系統在影像中未偵測到舌頭' },
+    description: { en: 'The system could not detect a tongue in the image.', zh: '系統在影像中未偵測到舌頭' },
     quote: { en: 'Please make sure your tongue is clearly visible in the photo.', zh: '請確保舌頭在照片中清楚可見。' },
     advice: { en: 'Try taking the photo again in good lighting, stick out your tongue naturally, and keep the camera steady.', zh: '請在光線充足的環境下重新拍攝，自然伸出舌頭並保持相機穩定。' },
     foods: [
