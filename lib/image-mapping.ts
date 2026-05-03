@@ -183,13 +183,13 @@ export const getFoodImage = (foodName: string): string | null => {
              k.toLowerCase().includes(foodName.toLowerCase()) || 
              foodName.toLowerCase().includes(k.toLowerCase());
     });
-    console.log('Food not found:', {
-      input: foodName,
-      normalized: normalizedInput,
-      normalizedNoPunct: normalizedInputNoPunct,
-      matchingKeys: matchingKeys,
-      allKeys: Object.keys(FOOD_IMAGES)
-    });
+    // console.log('Food not found:', {
+    //   input: foodName,
+    //   normalized: normalizedInput,
+    //   normalizedNoPunct: normalizedInputNoPunct,
+    //   matchingKeys: matchingKeys,
+    //   allKeys: Object.keys(FOOD_IMAGES)
+    // });
   }
   
   return null;

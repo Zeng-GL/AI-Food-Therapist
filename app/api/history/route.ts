@@ -35,8 +35,6 @@ export async function POST(req: Request) {
   try {
     const { diagnosisData, imageUrl } = await req.json();
 
-    console.log(imageUrl);
-
     await ddb.send(
       new PutCommand({
         TableName: "DiagnosisHistory",

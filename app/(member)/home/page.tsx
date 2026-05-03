@@ -102,7 +102,7 @@ export default function HomePage() {
               ),
               food_list: item.result?.foods ?? [],
             };
-            console.log(record);
+            // console.log(record);
             setLatestScan(record);
             setHasScanToday(isToday(record.timestamp));
           }

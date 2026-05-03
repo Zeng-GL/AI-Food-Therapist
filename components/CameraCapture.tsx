@@ -261,7 +261,7 @@ export default function CameraCapture({
     setIsCompressing(false);
   } catch (err) {
     console.error("Error cropping image:", err);
-    setError(isZh ? "圖片處理失敗" : "Image processing failed");
+    setError(isZh ? "處理失敗：請確保照片包含清晰的舌象圖片，並稍後再試。" : "Failed: Please ensure the photo contains a clear tongue image and try again later.");
     setIsCompressing(false);
   }
 };

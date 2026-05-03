@@ -28,18 +28,17 @@ export default function HomePage() {
   // }, [mounted, isLoggedIn, router]);
 
   const handleStartDiagnosis = () => {
-    console.log("Start diagnosis clicked"); // Debug log
     setShowLoginModal(true);
   };
 
   const handleGuestContinue = () => {
-    console.log("Guest continue clicked"); // Debug log
+    // console.log("Guest continue clicked"); // Debug log
     // Guest mode - go directly to diagnosis
     router.push("/diagnosis");
   };
 
   const handleModalClose = () => {
-    console.log("Modal close clicked"); // Debug log
+    // console.log("Modal close clicked"); // Debug log
     setShowLoginModal(false);
   };
 

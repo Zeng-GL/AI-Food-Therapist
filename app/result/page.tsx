@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw, Save, ArrowLeft } from "lucide-react";
 import { useLanguageStore } from "@/store/use-language-store";
 import { useSession } from "next-auth/react";
 import { useResultStore } from "@/store/use-result-store";
 import { getTongueImage, getFoodImage } from "@/lib/image-mapping";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { sendGAEvent } from "@next/third-parties/google";
 
 // --- 型別定義 ---
@@ -42,10 +41,8 @@ export default function ResultPage() {
   const { language } = useLanguageStore();
   const { data: session, status } = useSession();
 
-  const isGuest =
-    typeof window !== "undefined" &&
-    sessionStorage.getItem("is_guest") === "true";
-  const isLoggedIn = status === "authenticated" && !isGuest;
+  const userId = (session?.user as any)?.id;
+  const isLoggedIn = status === "authenticated" && !!userId;
   const isZh = language === "zh";
 
   // 從 Zustand 取得原始資料
@@ -89,8 +86,8 @@ export default function ResultPage() {
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
           <p className="text-text-secondary">
-            {isZh ? "載入中..." : "Loading..."}
-          </p>
+          {isZh ? "載入中..." : "Loading..."}
+        </p>
         </div>
       </div>
     );
@@ -145,19 +142,19 @@ export default function ResultPage() {
         router.push("/trends");
       } else {
         // 訪客逻辑：存入 localStorage 並引導登入
-        localStorage.setItem(
-          "pending_save_result",
-          JSON.stringify({ ...result, timestamp: Date.now() }),
-        );
-        if (
-          confirm(
-            isZh
-              ? "儲存記錄需要登入，是否要登入？"
-              : "Please sign in to save your records.",
-          )
-        ) {
-          router.push("/auth/choose");
-        }
+        // localStorage.setItem(
+        //   "pending_save_result",
+        //   JSON.stringify({ ...result, timestamp: Date.now() }),
+        // );
+        // if (
+        //   confirm(
+        //     isZh
+        //       ? "儲存記錄需要登入，是否要登入？"
+        //       : "Please sign in to save your records.",
+        //   )
+        // ) {
+        //   router.push("/auth/choose");
+        // }
       }
     } catch (error) {
       sendGAEvent("event", "photo_upload_fail", {
@@ -178,8 +175,8 @@ export default function ResultPage() {
         >
           <ArrowLeft size={24} />
         </button>
-        {isGuest && <LanguageSwitcher />}
-        {!isGuest && <div className="w-10"></div>}
+        {/* {isGuest && <LanguageSwitcher />}
+        {!isGuest && <div className="w-10"></div>} */}
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">

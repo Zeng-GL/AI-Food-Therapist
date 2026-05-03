@@ -1,449 +1,675 @@
 {
   "data": [
     {
-      "id": "red",
-      "slug": "red-tongue",
-      "name": {
-        "en": "Red Tongue",
-        "zh": "舌紅"
-      },
+      "id": "balanced",
+      "slug": "balanced-healthy",
+      "name": { "en": "Balanced / Healthy", "zh": "健康平衡型" },
       "description": {
-        "en": "Excess internal heat, prone to heatiness",
-        "zh": "火氣大、內熱傾向"
+        "en": "Pale red tongue with a thin white coating. Qi and blood are in harmony.",
+        "zh": "淡紅舌、薄白苔。氣血充沛，身體機能協調。"
       },
       "quote": {
-        "en": "Feeling the heat? Don't let little things ruin your mood 🔥",
-        "zh": "最近火氣有點旺，別讓小事燒掉你的好心情🔥"
+        "en": "You're glowing! Keep up the rhythm, you're a health icon. 🌟",
+        "zh": "狀態滿分！你就是健康模範，請繼續保持。🌟"
       },
       "advice": {
-        "en": "A red tongue often indicates excess heat in the body. Cooling and yin-nourishing foods help restore balance.",
-        "zh": "舌紅多與體內熱盛有關，適合選擇清涼、養陰的食物，幫助降火平衡。"
+        "en": "Focus on balanced, whole foods to maintain stability.",
+        "zh": "平補為主，選擇天然原形食物維持穩定。"
       },
       "foods": [
         {
-          "id": "lotus-seeds",
-          "name": {
-            "en": "Lotus seeds",
-            "zh": "蓮子"
-          },
+          "id": "blueberries",
+          "name": { "en": "Blueberries", "zh": "藍莓" },
           "benefitText": {
-            "en": "Calms the mind and reduces internal heat to restore inner peace.",
-            "zh": "清心安神，能緩解心煩焦慮，並有助於降低體內虛火。"
+            "en": "Rich in antioxidants for overall health.",
+            "zh": "富含抗氧化物，維持整體健康。"
           },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": [],
-          "healthBenefits": ["sleep_quality", "general_wellness"]
+          "healthBenefits": ["general_wellness", "skin_health"]
         },
         {
-          "id": "lily-bulbs",
-          "name": {
-            "en": "Lily bulbs",
-            "zh": "百合"
-          },
+          "id": "eggs",
+          "name": { "en": "Eggs", "zh": "雞蛋" },
           "benefitText": {
-            "en": "Nourishes Yin and moistens dryness to soothe the respiratory system.",
-            "zh": "滋陰潤燥，專門滋養肺部與喉嚨，修復因乾燥引起的不適。"
+            "en": "High-quality protein for tissue repair.",
+            "zh": "優質蛋白，幫助身體修復。"
           },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
+          "diet": { "vegan": false, "vegetarian": true },
+          "allergens": ["Egg"],
           "contraindications": [],
-          "healthBenefits": ["sleep_quality", "skin_health"]
+          "healthBenefits": ["general_wellness"]
         },
         {
-          "id": "mung-bean-soup",
-          "name": {
-            "en": "Mung bean soup",
-            "zh": "綠豆湯"
-          },
+          "id": "oats",
+          "name": { "en": "Oats", "zh": "燕麥" },
           "benefitText": {
-            "en": "Clears heat and detoxifies the body from accumulated toxins.",
-            "zh": "清熱解毒，是夏季消暑、排除體內熱毒的經典食療。"
+            "en": "Supports metabolism with stable fiber.",
+            "zh": "穩定纖維，幫助代謝平衡。"
           },
           "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": ["G6PD"],
-          "healthBenefits": ["skin_health", "general_wellness"]
+          "allergens": ["Gluten"],
+          "contraindications": [],
+          "healthBenefits": ["digestion", "metabolism"]
         }
-      ],
-      "createdAt": "2026-02-19T00:00:00.000Z",
-      "updatedAt": "2026-03-04T00:00:00.000Z"
+      ]
     },
     {
-      "id": "pale",
-      "slug": "pale-tongue",
-      "name": {
-        "en": "Pale Tongue",
-        "zh": "舌淡白"
-      },
+      "id": "qi_deficiency",
+      "slug": "qi-deficiency",
+      "name": { "en": "Qi Deficiency", "zh": "氣虛型" },
       "description": {
-        "en": "Cold-deficiency constitution, weaker circulation",
-        "zh": "虛寒體質、循環較弱"
+        "en": "Low energy and fatigue with scalloped tongue.",
+        "zh": "舌淡紅有齒痕，能量不足易疲倦。"
       },
       "quote": {
-        "en": "Your energy seems low — warm foods and rest will help 🛌",
-        "zh": "看起來有點虛，不妨多補充溫暖食物與休息🛌"
+        "en": "Running on low battery? Recharge 🔋",
+        "zh": "最近是不是覺得懶洋洋的？🔋"
       },
       "advice": {
-        "en": "A pale tongue is often linked to qi and blood deficiency. Warm, spleen-strengthening foods can improve vitality and circulation.",
-        "zh": "舌淡白常與氣血不足有關，適合溫補、健脾的食物，幫助提升體力與循環。"
+        "en": "Eat warm, easy-to-digest foods.",
+        "zh": "補氣健脾，多吃溫熱食物。"
       },
       "foods": [
         {
-          "id": "red-dates",
-          "name": {
-            "en": "Red dates",
-            "zh": "紅棗"
-          },
+          "id": "yam",
+          "name": { "en": "Yam", "zh": "山藥" },
           "benefitText": {
-            "en": "Tonifies Qi and nourishes blood to enhance energy levels.",
-            "zh": "補氣養血，能提升氣色並增強脾胃能量。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": ["Diabetes"],
-          "healthBenefits": ["fatigue_relief", "general_wellness"]
-        },
-        {
-          "id": "goji-berries",
-          "name": {
-            "en": "Goji berries",
-            "zh": "枸杞"
-          },
-          "benefitText": {
-            "en": "Nourishes the liver and improves vision for eye health.",
-            "zh": "養肝明目，對長期用眼過度及肝腎陰虛有良好的補益作用。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": [],
-          "healthBenefits": ["fatigue_relief", "general_wellness"]
-        },
-        {
-          "id": "chinese-yam",
-          "name": {
-            "en": "Chinese yam",
-            "zh": "山藥"
-          },
-          "benefitText": {
-            "en": "Strengthens the spleen and kidney to support digestive health.",
-            "zh": "健脾補腎，性質溫和，能強健消化系統並固腎益精。"
+            "en": "Boosts digestive energy.",
+            "zh": "強化脾胃動力。"
           },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": [],
           "healthBenefits": ["digestion", "fatigue_relief"]
-        }
-      ]
-    },
-    {
-      "id": "white_thick",
-      "slug": "thick-white-coating",
-      "name": {
-        "en": "Thick White Coating",
-        "zh": "舌苔白厚"
-      },
-      "description": {
-        "en": "Dampness accumulation, poor digestion",
-        "zh": "濕氣重、消化不良"
-      },
-      "quote": {
-        "en": "Feeling heavy? Try herbal tea to clear the damp ☁️",
-        "zh": "濕氣卡住了你？試試去濕茶，讓身體清爽點☁️"
-      },
-      "advice": {
-        "en": "A thick white coating often indicates dampness in the spleen and stomach. Foods that drain dampness and promote digestion are recommended.",
-        "zh": "舌苔白厚多與脾胃濕重有關，適合健脾化濕、利水的食物。"
-      },
-      "foods": [
-        {
-          "id": "jobs-tears",
-          "name": {
-            "en": "Job's tears",
-            "zh": "薏仁"
-          },
-          "benefitText": {
-            "en": "Drains dampness and promotes urination to reduce swelling.",
-            "zh": "利水滲濕，有助於排除體內多餘水分，消除浮腫。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": ["Gluten"],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "general_wellness"]
         },
         {
-          "id": "white-radish",
-          "name": {
-            "en": "White radish",
-            "zh": "白蘿蔔"
-          },
+          "id": "red_dates",
+          "name": { "en": "Red Dates", "zh": "紅棗" },
           "benefitText": {
-            "en": "Aids digestion and promotes smooth movement of Qi.",
-            "zh": "助消化，能順氣消食，緩解腹脹不適。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": [],
-          "healthBenefits": ["digestion"]
-        },
-        {
-          "id": "winter-melon",
-          "name": {
-            "en": "Winter melon",
-            "zh": "冬瓜"
-          },
-          "benefitText": {
-            "en": "Clears heat and promotes urination to flush out excess heat.",
-            "zh": "清熱利尿，透過增加代謝排尿來帶走體內的積熱。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "general_wellness"]
-        }
-      ]
-    },
-    {
-      "id": "yellow_thick",
-      "slug": "thick-yellow-coating",
-      "name": {
-        "en": "Thick Yellow Coating",
-        "zh": "舌苔黃厚"
-      },
-      "description": {
-        "en": "Internal damp-heat, heat syndrome",
-        "zh": "濕熱內蘊、上火"
-      },
-      "quote": {
-        "en": "Watch out for heatiness! Cool down with light meals 🍵",
-        "zh": "小心上火！多吃清熱食物，給自己降溫🍵"
-      },
-      "advice": {
-        "en": "Linked to internal damp-heat. Choose foods that clear heat and remove dampness.",
-        "zh": "多與濕熱有關，適合清熱去濕食物。"
-      },
-      "foods": [
-        {
-          "id": "bitter-melon",
-          "name": {
-            "en": "Bitter melon",
-            "zh": "苦瓜"
-          },
-          "benefitText": {
-            "en": "Clears heat and relieves summer heat, ideal for cooling the body.",
-            "zh": "清熱解暑，能瀉火除煩，特別適合火氣大時食用。"
+            "en": "Improves energy levels.",
+            "zh": "提升氣血。"
           },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": ["Diabetes"],
-          "healthBenefits": ["digestion", "general_wellness"]
+          "healthBenefits": ["fatigue_relief"]
         },
         {
-          "id": "mung-beans",
-          "name": {
-            "en": "Mung beans",
-            "zh": "綠豆"
-          },
-          "benefitText": {
-            "en": "Clears heat and detoxifies to protect against heat-related fatigue.",
-            "zh": "清熱解毒，強效排除體內暑氣與毒素。"
-          },
+          "id": "millet",
+          "name": { "en": "Millet", "zh": "小米" },
+          "benefitText": { "en": "Gentle energy source.", "zh": "溫和補能。" },
           "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": ["G6PD"],
-          "healthBenefits": ["digestion", "skin_health"]
-        },
-        {
-          "id": "aged-tangerine-peel",
-          "name": {
-            "en": "Aged tangerine peel",
-            "zh": "陳皮"
-          },
-          "benefitText": {
-            "en": "Strengthens the spleen and regulates Qi to reduce bloating.",
-            "zh": "健脾理氣，能燥濕化痰，讓脾胃運作更順暢。"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
+          "allergens": ["Gluten"],
           "contraindications": [],
           "healthBenefits": ["digestion"]
         }
       ]
     },
+
     {
-      "id": "peeled",
-      "slug": "peeled-no-coating",
-      "name": {
-        "en": "Peeled / No Coating",
-        "zh": "舌苔剝落 / 無苔"
-      },
+      "id": "yang_deficiency",
+      "slug": "yang-deficiency",
+      "name": { "en": "Yang Deficiency", "zh": "陽虛型" },
       "description": {
-        "en": "Stomach yin deficiency, qi deficiency, general weakness",
-        "zh": "胃陰虛、氣虛、身體較虛弱"
+        "en": "Cold sensitivity and low warmth.",
+        "zh": "怕冷、體內溫度不足。"
       },
       "quote": {
-        "en": "Running low? Time to recharge with rest and nutrients 💧",
-        "zh": "最近有點累過頭，記得放慢腳步，補充營養💧"
+        "en": "Warm yourself from within ☀️",
+        "zh": "給身體一點溫暖 ☀️"
       },
       "advice": {
-        "en": "A peeled tongue coating is often related to stomach yin deficiency. Gentle, yin-nourishing foods are ideal.",
-        "zh": "舌苔剝落多與胃陰不足有關，適合滋陰養胃、溫和補養的食物"
+        "en": "Avoid cold foods.",
+        "zh": "避免寒性食物。"
       },
       "foods": [
         {
-          "id": "snow-pear",
-          "name": { "en": "Snow pear", "zh": "雪梨" },
+          "id": "ginger",
+          "name": { "en": "Ginger", "zh": "生薑" },
           "benefitText": {
-            "en": "Generates body fluids and moistens dryness to relieve thirst",
-            "zh": "生津潤燥，潤肺止咳，是補足身體水分的佳品"
+            "en": "Improves circulation.",
+            "zh": "促進血液循環。"
           },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": [],
-          "healthBenefits": ["skin_health", "general_wellness"]
+          "healthBenefits": ["circulation"]
         },
         {
-          "id": "fresh-lily-bulbs",
-          "name": { "en": "Fresh lily bulbs", "zh": "鮮百合" },
+          "id": "mutton",
+          "name": { "en": "Mutton", "zh": "羊肉" },
+          "benefitText": { "en": "Warms the body.", "zh": "溫補身體。" },
+          "diet": { "vegan": false, "vegetarian": false },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["general_wellness"]
+        },
+        {
+          "id": "cinnamon",
+          "name": { "en": "Cinnamon", "zh": "肉桂" },
           "benefitText": {
-            "en": "Nourishes Yin and moistens the lungs for deeper hydration",
-            "zh": "養陰潤肺，口感更潤，能清心除煩並滋潤呼吸道"
+            "en": "Boosts internal warmth.",
+            "zh": "提升體內溫度。"
           },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": [],
-          "healthBenefits": ["sleep_quality", "general_wellness"]
-        },
-        {
-          "id": "millet-porridge",
-          "name": { "en": "Millet porridge", "zh": "小米粥" },
-          "benefitText": {
-            "en": "Strengthens the spleen and nourishes the stomach for easy digestion",
-            "zh": "健脾養胃，極易消化，是病後或脾胃虛弱者的補品"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": ["Gluten"],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "sleep_quality"]
+          "healthBenefits": ["circulation"]
         }
       ]
     },
+
     {
-      "id": "teeth_marks",
-      "slug": "scalloped-tongue",
-      "name": {
-        "en": "Teeth Marks (Scalloped)",
-        "zh": "舌有齒痕"
-      },
+      "id": "blood_deficiency",
+      "slug": "blood-deficiency",
+      "name": { "en": "Blood Deficiency", "zh": "血虛型" },
       "description": {
-        "en": "Spleen deficiency, edema, internal dampness",
-        "zh": "脾虛、水腫、體內濕氣"
+        "en": "Low blood nourishment and dryness.",
+        "zh": "血液滋養不足，偏乾燥。"
       },
       "quote": {
-        "en": "Stress shows — sleep early and cut the salt 🌙",
-        "zh": "壓力太大會水腫喔，早睡和少鹽可以幫你消腫🌙"
+        "en": "Nourish yourself ❤️",
+        "zh": "記得補充營養 ❤️"
       },
       "advice": {
-        "en": "Teeth marks on the tongue are often related to spleen deficiency and excess dampness. Foods that strengthen the spleen and drain dampness are beneficial.",
-        "zh": "有齒痕多與脾虛、體內濕氣重有關，適合健脾利濕的食物。"
+        "en": "Eat iron-rich foods.",
+        "zh": "多補血。"
       },
       "foods": [
         {
-          "id": "jobs-tears",
-          "name": { "en": "Job's tears", "zh": "薏仁" },
-          "benefitText": {
-            "en": "Drains dampness and promotes urination to reduce swelling",
-            "zh": "利水滲濕，有助於排除體內多餘水分，消除浮腫"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": ["Gluten"],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "general_wellness"]
-        },
-        {
-          "id": "red-beans",
-          "name": { "en": "Red beans", "zh": "紅豆" },
-          "benefitText": {
-            "en": "Strengthens the spleen and removes dampness from the body",
-            "zh": "健脾祛濕，側重於補血與代謝下肢水腫"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "general_wellness"]
-        },
-        {
-          "id": "fresh-ginger",
-          "name": { "en": "Fresh ginger", "zh": "生薑" },
-          "benefitText": {
-            "en": "Warms the middle burner and expels dampness and cold",
-            "zh": "溫中祛濕，透過溫熱性質發汗散寒，驅除體內寒濕"
-          },
-          "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": [],
-          "healthBenefits": ["digestion", "fatigue_relief"]
-        }
-      ]
-    },
-    {
-      "id": "cracked",
-      "slug": "cracked-tongue",
-      "name": {
-        "en": "Cracked Tongue",
-        "zh": "舌有裂紋"
-      },
-      "description": {
-        "en": "Fluid deficiency, stress-related heat or internal heat",
-        "zh": "體液不足、壓力大或內熱"
-      },
-      "quote": {
-        "en": "Your tongue tells what your heart hides — be kind to yourself 💬",
-        "zh": "你內心的疲憊悄悄顯現在舌頭上，該好好愛自己了💬"
-      },
-      "advice": {
-        "en": "A cracked tongue is often associated with yin deficiency or lack of body fluids. Choose yin-nourishing and fluid-generating foods.",
-        "zh": "舌有裂紋多與陰虛或體液不足有關，適合滋陰養津的食物"
-      },
-      "foods": [
-        {
-          "id": "black-sesame",
-          "name": { "en": "Black sesame", "zh": "黑芝麻" },
-          "benefitText": {
-            "en": "Nourishes Yin and moistens dryness for skin and hair health",
-            "zh": "滋陰潤燥，能潤腸通便並滋養頭髮與肌膚"
-          },
+          "id": "black_sesame",
+          "name": { "en": "Black Sesame", "zh": "黑芝麻" },
+          "benefitText": { "en": "Supports skin health.", "zh": "滋養肌膚。" },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": ["Nuts"],
           "contraindications": [],
-          "healthBenefits": ["skin_health", "general_wellness"]
+          "healthBenefits": ["skin_health"]
         },
         {
-          "id": "white-fungus",
-          "name": { "en": "White fungus", "zh": "銀耳" },
-          "benefitText": {
-            "en": "Nourishes Yin and generates fluids to replenish collagen-like moisture",
-            "zh": "養陰生津，含有豐富膠質，能滋潤全身乾燥組織"
-          },
+          "id": "longan",
+          "name": { "en": "Longan", "zh": "龍眼乾" },
+          "benefitText": { "en": "Supports sleep.", "zh": "幫助睡眠。" },
           "diet": { "vegan": true, "vegetarian": true },
           "allergens": [],
           "contraindications": [],
-          "healthBenefits": ["skin_health", "sleep_quality"]
+          "healthBenefits": ["sleep_quality"]
         },
         {
-          "id": "sugarcane-juice",
-          "name": { "en": "Sugarcane juice", "zh": "甘蔗汁" },
-          "benefitText": {
-            "en": "Clears heat and generates fluids to rapidly hydrate the body",
-            "zh": "清熱生津，能快速補給水分並緩解口乾舌燥"
-          },
+          "id": "red_peanuts",
+          "name": { "en": "Red Peanuts", "zh": "紅花生" },
+          "benefitText": { "en": "Replenishes nutrients.", "zh": "補充營養。" },
           "diet": { "vegan": true, "vegetarian": true },
-          "allergens": [],
-          "contraindications": ["Diabetes"],
+          "allergens": ["Peanuts"],
+          "contraindications": [],
           "healthBenefits": ["general_wellness"]
         }
       ]
     },
+    {
+      "id": "qi_damp",
+      "slug": "qi-deficiency-dampness",
+      "name": { "en": "Qi Deficiency with Dampness", "zh": "氣虛濕阻型" },
+      "description": {
+        "en": "Heavy body sensation due to dampness and low energy.",
+        "zh": "濕氣與氣虛並存，身體沉重。"
+      },
+      "quote": {
+        "en": "Feeling heavy? Clear the fog ☁️",
+        "zh": "身體沉重嗎？來除濕 ☁️"
+      },
+      "advice": {
+        "en": "Boost energy while draining excess fluids.",
+        "zh": "補氣同時排濕。"
+      },
+      "foods": [
+        {
+          "id": "poria",
+          "name": { "en": "Poria", "zh": "茯苓" },
+          "benefitText": {
+            "en": "Drains dampness gently.",
+            "zh": "溫和利水除濕。"
+          },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["detox", "digestion"]
+        },
+        {
+          "id": "jobs_tears",
+          "name": { "en": "Job's Tears", "zh": "薏仁" },
+          "benefitText": { "en": "Reduces swelling.", "zh": "消腫利水。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": ["Gluten"],
+          "contraindications": [],
+          "healthBenefits": ["detox"]
+        },
+        {
+          "id": "si_shen_soup",
+          "name": { "en": "Si Shen Soup", "zh": "四神湯" },
+          "benefitText": { "en": "Supports digestion.", "zh": "健脾除濕。" },
+          "diet": { "vegan": false, "vegetarian": false },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["digestion"]
+        }
+      ]
+    },
+    {
+      "id": "phlegm_damp",
+      "slug": "phlegm-dampness",
+      "name": { "en": "Phlegm-Dampness", "zh": "痰濕內蘊型" },
+      "description": {
+        "en": "Metabolic waste accumulation causing sluggishness.",
+        "zh": "代謝廢物累積，造成阻塞。"
+      },
+      "quote": {
+        "en": "Clear the internal traffic 🚗",
+        "zh": "身體塞車中 🚗"
+      },
+      "advice": {
+        "en": "Avoid greasy and sugary foods.",
+        "zh": "避免油膩甜食。"
+      },
+      "foods": [
+        {
+          "id": "aged_peel",
+          "name": { "en": "Aged Peel", "zh": "陳皮" },
+          "benefitText": { "en": "Improves Qi flow.", "zh": "理氣化痰。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["digestion"]
+        },
+        {
+          "id": "white_radish",
+          "name": { "en": "White Radish", "zh": "白蘿蔔" },
+          "benefitText": { "en": "Supports digestion.", "zh": "助消化。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": [],
+          "contraindications": [],
+          "healthBenefits": ["digestion"]
+        },
+        {
+          "id": "kelp",
+          "name": { "en": "Kelp", "zh": "昆布" },
+          "benefitText": { "en": "Breaks down buildup.", "zh": "軟堅散結。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "allergens": ["Seaweed"],
+          "contraindications": [],
+          "healthBenefits": ["detox"]
+        }
+      ]
+    },
+    {
+      "id": "damp_heat",
+      "slug": "damp-heat",
+      "name": { "en": "Damp-Heat", "zh": "濕熱型" },
+      "description": {
+        "en": "Internal heat and dampness causing oiliness.",
+        "zh": "濕熱內蘊，易長痘出油。"
+      },
+      "quote": {
+        "en": "Cool down your system 🥗",
+        "zh": "清爽一點 🥗"
+      },
+      "advice": {
+        "en": "Avoid alcohol and spicy foods.",
+        "zh": "避免辛辣酒精。"
+      },
+      "foods": [
+        {
+          "id": "bitter_melon",
+          "name": { "en": "Bitter Melon", "zh": "苦瓜" },
+          "benefitText": { "en": "Clears heat.", "zh": "清熱降火。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["detox"]
+        },
+        {
+          "id": "adzuki_beans",
+          "name": { "en": "Adzuki Beans", "zh": "赤小豆" },
+          "benefitText": { "en": "Drains dampness.", "zh": "利水除濕。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["detox"]
+        },
+        {
+          "id": "mung_beans",
+          "name": { "en": "Mung Beans", "zh": "綠豆" },
+          "benefitText": { "en": "Detoxifies heat.", "zh": "清熱解毒。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["detox"]
+        }
+      ]
+    },
+    {
+      "id": "excess_heat",
+      "slug": "excess-heat",
+      "name": { "en": "Excess Heat", "zh": "實熱型" },
+      "description": {
+        "en": "Red tongue with thick yellow coating. Intense internal fire and thirst.",
+        "zh": "舌質紅、苔黃厚。火氣正旺，伴隨口乾便秘。"
+      },
+      "quote": {
+        "en": "Feeling like a volcano? Cool down and let the fire fade. 🔥",
+        "zh": "火氣旺到快自燃了？喝杯溫水冷靜一下身體吧。🔥"
+      },
+      "advice": {
+        "en": "Clear excess fire and ensure regular bowel movements.",
+        "zh": "苦寒泄火，保持排便順暢。"
+      },
+      "foods": [
+        {
+          "id": "lotus_seed",
+          "name": { "en": "Lotus Seed", "zh": "蓮子" },
+          "benefitText": { "en": "Calms heat.", "zh": "清心火。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["stress_relief"]
+        },
+        {
+          "id": "celery",
+          "name": { "en": "Celery", "zh": "芹菜" },
+          "benefitText": { "en": "Reduces tension.", "zh": "清熱降壓。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["circulation"]
+        },
+        {
+          "id": "white_fungus",
+          "name": { "en": "White Fungus", "zh": "銀耳" },
+          "benefitText": { "en": "Hydrates body.", "zh": "滋陰潤燥。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration", "skin_health"]
+        }
+      ]
+    },
+
+    {
+      "id": "yin_deficiency",
+      "slug": "yin-deficiency",
+      "name": { "en": "Yin Deficiency", "zh": "陰虛型" },
+      "description": {
+        "en": "Red, thin tongue with little coating. Body fluids are depleted.",
+        "zh": "舌紅瘦小少苔。水分被燒乾，身體長期乾燥。"
+      },
+      "quote": {
+        "en": "Like a thirsty flower, you need some deep hydration. 🌸",
+        "zh": "像是一朵缺水的花，你現在最需要的是深度補水。🌸"
+      },
+      "advice": {
+        "en": "Nourish Yin and fluids; avoid grilled and spicy foods.",
+        "zh": "滋陰潤燥，嚴禁燒烤與辛辣物。"
+      },
+      "foods": [
+        {
+          "id": "lily_bulb",
+          "name": { "en": "Lily Bulb", "zh": "百合" },
+          "benefitText": { "en": "Moistens lungs.", "zh": "滋陰潤肺。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        },
+        {
+          "id": "black_fungus",
+          "name": { "en": "Black Fungus", "zh": "黑木耳" },
+          "benefitText": { "en": "Retains moisture.", "zh": "鎖水。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        },
+        {
+          "id": "pear",
+          "name": { "en": "Pear", "zh": "梨子" },
+          "benefitText": { "en": "Generates fluids.", "zh": "生津止渴。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        }
+      ]
+    },
+
+    {
+      "id": "yin_fire",
+      "slug": "yin-deficiency-fire",
+      "name": { "en": "Yin Deficiency with Fire", "zh": "陰虛火旺型" },
+      "description": {
+        "en": "Red, cracked tongue with no coating. Severe fluid depletion.",
+        "zh": "舌紅裂紋、無苔。水分極度透支，傷及根基。"
+      },
+      "quote": {
+        "en": "Your body is calling for help. It’s time for rest and water. 🛌",
+        "zh": "真的辛苦了，你的身體在尖叫著要休息與補水。🛌"
+      },
+      "advice": {
+        "en": "Extreme hydration and calming; strictly avoid late nights.",
+        "zh": "極致潤燥與安神，絕對避免熬夜。"
+      },
+      "foods": [
+        {
+          "id": "honey",
+          "name": { "en": "Honey", "zh": "蜂蜜" },
+          "benefitText": { "en": "Moistens dryness.", "zh": "潤燥。" },
+          "diet": { "vegan": false, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        },
+        {
+          "id": "duck",
+          "name": { "en": "Duck", "zh": "鴨肉" },
+          "benefitText": { "en": "Cooling protein.", "zh": "滋陰。" },
+          "diet": { "vegan": false, "vegetarian": false },
+          "healthBenefits": ["general_wellness"]
+        },
+        {
+          "id": "dendrobium",
+          "name": { "en": "Dendrobium", "zh": "石斛" },
+          "benefitText": { "en": "Deep hydration.", "zh": "滋陰。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        }
+      ]
+    },
+
+    {
+      "id": "weak_stomach",
+      "slug": "weak-stomach-qi",
+      "name": { "en": "Weak Stomach Qi", "zh": "胃氣虛弱型" },
+      "description": {
+        "en": "Peeled coating (Geographic tongue). Weak digestive repair capacity.",
+        "zh": "苔剝落（地圖舌）。腸胃修復力罷工，消化力弱。"
+      },
+      "quote": {
+        "en": "Stomach on strike? Let's soothe it with gentle care. 🍲",
+        "zh": "腸胃累了想罷工？我們用溫柔的食物來安慰它吧。🍲"
+      },
+      "advice": {
+        "en": "Strengthen Spleen/Stomach; small frequent soft meals.",
+        "zh": "健脾和胃，少量多餐，細嚼慢嚥。"
+      },
+      "foods": [
+        {
+          "id": "pumpkin",
+          "name": { "en": "Pumpkin", "zh": "南瓜" },
+          "benefitText": { "en": "Supports stomach lining.", "zh": "保護胃。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["digestion"]
+        },
+        {
+          "id": "millet_porridge",
+          "name": { "en": "Millet Porridge", "zh": "小米粥" },
+          "benefitText": { "en": "Easy digestion.", "zh": "易消化。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["digestion"]
+        },
+        {
+          "id": "cabbage",
+          "name": { "en": "Chinese Cabbage", "zh": "白菜" },
+          "benefitText": { "en": "Gentle fiber.", "zh": "溫和。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["digestion"]
+        }
+      ]
+    },
+
+    {
+      "id": "deep_heat",
+      "slug": "deep-heat-crimson",
+      "name": { "en": "Deep Heat / Crimson", "zh": "熱入營血型" },
+      "description": {
+        "en": "Crimson red tongue with no coating. Severe heat and fluid loss.",
+        "zh": "舌深紅無苔。熱毒深重，體液嚴重耗損。"
+      },
+      "quote": {
+        "en": "Red alert! Your body is struggling—seek professional advice. 🚨",
+        "zh": "這是身體的紅色警訊！別再硬撐了，請專業諮詢。🚨"
+      },
+      "advice": {
+        "en": "Cool the blood and heat; maintain liquid-based nutrition.",
+        "zh": "清營涼血，採取高營養流質飲食。"
+      },
+      "foods": [
+        {
+          "id": "sugarcane_juice",
+          "name": { "en": "Sugarcane Juice", "zh": "甘蔗汁" },
+          "benefitText": { "en": "Rapid cooling.", "zh": "快速降溫。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        },
+        {
+          "id": "coconut_water",
+          "name": { "en": "Coconut Water", "zh": "椰子水" },
+          "benefitText": { "en": "Electrolytes.", "zh": "補電解質。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        },
+        {
+          "id": "watermelon_juice",
+          "name": { "en": "Watermelon Juice", "zh": "西瓜汁" },
+          "benefitText": { "en": "Hydrates quickly.", "zh": "快速補水。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["hydration"]
+        }
+      ]
+    },
+
+    {
+      "id": "blood_stasis",
+      "slug": "blood-stasis",
+      "name": { "en": "Blood Stasis", "zh": "氣滯血瘀型" },
+      "description": {
+        "en": "Dull purple tongue or spots. Poor circulation from stagnation.",
+        "zh": "舌暗紫或瘀點。循環阻塞，情緒鬱結導致。"
+      },
+      "quote": {
+        "en": "Feeling stuck? Let your emotions flow to clear blockages. 🌈",
+        "zh": "心情鬱悶嗎？氣不通血就不動，讓心開朗點吧。🌈"
+      },
+      "advice": {
+        "en": "Promote Qi and blood flow; gentle exercise and stretching.",
+        "zh": "行氣活血，適度運動舒壓。"
+      },
+      "foods": [
+        {
+          "id": "hawthorn",
+          "name": { "en": "Hawthorn", "zh": "山楂" },
+          "benefitText": { "en": "Boosts circulation.", "zh": "活血。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["circulation"]
+        },
+        {
+          "id": "rose_tea",
+          "name": { "en": "Rose Tea", "zh": "玫瑰花茶" },
+          "benefitText": { "en": "Relieves stress.", "zh": "疏肝。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["stress_relief"]
+        },
+        {
+          "id": "black_beans",
+          "name": { "en": "Black Beans", "zh": "黑豆" },
+          "benefitText": { "en": "Improves circulation.", "zh": "活血。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["circulation"]
+        }
+      ]
+    },
+
+    {
+      "id": "transition_heat",
+      "slug": "damp-to-heat-transition",
+      "name": { "en": "Transitioning Heat", "zh": "寒濕化熱型" },
+      "description": {
+        "en": "Scalloped tongue with yellow tip. Dampness is fermenting into heat.",
+        "zh": "齒痕舌、苔尖黃。濕氣正在體內發酵生熱。"
+      },
+      "quote": {
+        "en": "Your body is at a crossroads. Balance habits now. ⚖️",
+        "zh": "體質正在轉變期，現在調整還來得及喔。⚖️"
+      },
+      "advice": {
+        "en": "Simultaneously clear heat and drain dampness.",
+        "zh": "清熱與排濕並行，平衡過渡。"
+      },
+      "foods": [
+        {
+          "id": "corn_silk_tea",
+          "name": { "en": "Corn Silk Tea", "zh": "玉米鬚茶" },
+          "benefitText": { "en": "Drains dampness.", "zh": "利尿。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["detox"]
+        },
+        {
+          "id": "winter_melon",
+          "name": { "en": "Winter Melon", "zh": "冬瓜" },
+          "benefitText": { "en": "Clears heat.", "zh": "清熱。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["detox"]
+        },
+        {
+          "id": "lotus_root",
+          "name": { "en": "Lotus Root", "zh": "蓮藕" },
+          "benefitText": { "en": "Stabilizes body.", "zh": "穩定體質。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["general_wellness"]
+        }
+      ]
+    },
+
+    {
+      "id": "liver_fire",
+      "slug": "liver-fire",
+      "name": { "en": "Liver Fire", "zh": "肝火旺盛型" },
+      "description": {
+        "en": "Red edges and tip. High stress causing Liver fire to rise.",
+        "zh": "舌邊尖紅、苔薄黃。壓力大導致肝火上升。"
+      },
+      "quote": {
+        "en": "Stress piling up? Take a deep breath and let it go. 🍃",
+        "zh": "壓力太大了吧？給心靈放個假，火氣自然就消了。🍃"
+      },
+      "advice": {
+        "en": "Soothe the liver and clear heat with green vegetables.",
+        "zh": "疏肝清熱，多吃綠色舒壓蔬菜。"
+      },
+      "foods": [
+        {
+          "id": "chrysanthemum_tea",
+          "name": { "en": "Chrysanthemum Tea", "zh": "菊花茶" },
+          "benefitText": { "en": "Relieves stress.", "zh": "降火。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["stress_relief"]
+        },
+        {
+          "id": "mint",
+          "name": { "en": "Mint", "zh": "薄荷" },
+          "benefitText": { "en": "Cooling effect.", "zh": "清涼。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["stress_relief"]
+        },
+        {
+          "id": "crown_daisy",
+          "name": { "en": "Crown Daisy", "zh": "茼蒿" },
+          "benefitText": { "en": "Improves digestion.", "zh": "理氣。" },
+          "diet": { "vegan": true, "vegetarian": true },
+          "healthBenefits": ["digestion"]
+        }
+      ]
+    },
+
     {
       "id": "no_tongue",
       "slug": "no_tongue",
@@ -462,10 +688,7 @@
       "advice": {
         "en": "Try taking the photo again in good lighting, stick out your tongue naturally, and keep the camera steady.",
         "zh": "請在光線充足的環境下重新拍攝，自然伸出舌頭並保持相機穩定。"
-      },
-      "foods": [{}],
-      "createdAt": "2026-03-15T00:00:00.000Z",
-      "updatedAt": "2026-03-15T00:00:00.000Z"
+      }
     }
   ]
 }

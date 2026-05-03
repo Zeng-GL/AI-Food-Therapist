@@ -16,7 +16,8 @@ import { User, Edit, LogOut, Globe, ChevronRight } from "lucide-react";
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const isLoggedIn = status === "authenticated";
+  const userId = (session?.user as any)?.id;
+  const isLoggedIn = status === "authenticated" && !!userId;
 
   // ── store 欄位和 action 分開取，避免 stale closure ──────────────────
   const profile = useOnboardingStore();
@@ -36,8 +37,6 @@ export default function ProfilePage() {
 
         const { profile: dbProfile } = await res.json();
         if (!dbProfile) return;
-
-        console.log("DB profile:", dbProfile);
 
         updateProfile({
           gender: dbProfile.gender ?? null,
@@ -70,7 +69,7 @@ export default function ProfilePage() {
     ) {
       try {
         await signOut({ callbackUrl: "/", redirect: true });
-        sessionStorage.clear();
+        // sessionStorage.clear();
       } catch (error) {
         console.error("Logout Error:", error);
       }

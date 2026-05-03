@@ -55,7 +55,7 @@ export default function TrendsDetailPage() {
     const found = data.item;
 
     if (found) {
-      console.log(found);
+      // console.log(found);
       setRecord({
         id: found.historyId,
         resultCode: found.result.id,

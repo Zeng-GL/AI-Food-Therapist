@@ -42,11 +42,11 @@ export default function LoginModal({ isOpen, onClose, onGuestContinue }: LoginMo
       }
   };
 
-  const handleGuestContinue = () => {
-  sessionStorage.setItem('is_guest', 'true');
-  onGuestContinue();
-  onClose();
-};
+//   const handleGuestContinue = () => {
+//   sessionStorage.setItem('is_guest', 'true');
+//   onGuestContinue();
+//   onClose();
+// };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -66,7 +66,7 @@ export default function LoginModal({ isOpen, onClose, onGuestContinue }: LoginMo
           
           <p className="text-center text-gray-600 text-sm">
             {isZh 
-              ? '登入以儲存檢測歷史，或繼續以訪客身份使用' 
+              ? '登入以儲存檢測歷史' 
               : 'Sign in to save your history, or continue as guest'}
           </p>
 
@@ -97,7 +97,7 @@ export default function LoginModal({ isOpen, onClose, onGuestContinue }: LoginMo
               <span>{isZh ? '使用 Google 登入' : 'Continue with Google'}</span>
             </button>
 
-            <div className="relative">
+            {/* <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
               </div>
@@ -106,21 +106,21 @@ export default function LoginModal({ isOpen, onClose, onGuestContinue }: LoginMo
                   {isZh ? '或' : 'or'}
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <button
+            {/* <button
               onClick={handleGuestContinue}
               className="w-full py-3 px-4 bg-brand text-white rounded-full font-semibold hover:opacity-90 transition-all duration-200 active:scale-[0.98]"
             >
               {isZh ? '以訪客身份繼續' : 'Continue as Guest'}
-            </button>
+            </button> */}
           </div>
 
-          <p className="text-xs text-center text-gray-500 pt-2">
+          {/* <p className="text-xs text-center text-gray-500 pt-2">
             {isZh 
               ? '訪客模式不會儲存檢測歷史' 
               : 'Guest mode will not save your history'}
-          </p>
+          </p> */}
         </div>
       </div>
     </div>
