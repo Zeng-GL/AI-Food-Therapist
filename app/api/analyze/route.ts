@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import tongue_ref_data from "./recommend_rule.json";
+import tongue_ref_data from "./recommend_rule_v1.json";
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
