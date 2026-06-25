@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import tongue_ref_data from "./recommend_rule.json";
+import tongue_ref_data from "./recommend_rule_v1.json";
 
 const MODELS = [
   "gemini-2.5-flash",
@@ -215,7 +215,7 @@ If no tongue detected → return "no_tongue"
 // OpenRouter 版本
 // import { NextResponse } from "next/server";
 // import OpenAI from "openai";
-// import tongue_ref_data from "./recommend_rule.json";
+// import tongue_ref_data from "./recommend_rule_v1.json";
 
 // const openai = new OpenAI({
 //   baseURL: "https://openrouter.ai/api/v1",
@@ -357,7 +357,7 @@ If no tongue detected → return "no_tongue"
 // 舊Gemini版本（已棄用）
 // import { NextResponse } from "next/server";
 // import { GoogleGenAI } from "@google/genai";
-// import tongue_ref_data from "./recommend_rule.json";
+// import tongue_ref_data from "./recommend_rule_v1.json";
 
 // export async function POST(req: Request) {
 //   // Initialize Google GenAI client
